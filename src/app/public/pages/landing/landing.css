@@ -1,0 +1,16 @@
+/* Minimal styles - mostly using Bootstrap defaults */
+h1 {
+    font-weight: 600;
+}
+
+.card {
+    border: 1px solid #dee2e6;
+}
+
+.card-title {
+    font-size: 1.1rem;
+}
+
+.card-text {
+    font-size: 0.9rem;
+}
