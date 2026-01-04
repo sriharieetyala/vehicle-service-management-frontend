@@ -1,101 +1,153 @@
-<div class="auth-container">
-    <div class="auth-card" style="max-width: 500px;">
-        <h1>Register</h1>
-        <p>Create your account</p>
+<div class="auth-page">
+    <!-- Left Panel - Branding -->
+    <div class="auth-branding">
+        <div class="branding-content">
+            <div class="brand-logo">
+                <i class="bi bi-car-front-fill"></i>
+                <span>VSMS</span>
+            </div>
+            <h1>Join VSMS Today</h1>
+            <p>Create your account and get access to premium vehicle servicing at your fingertips.</p>
 
-        @if (errorMessage) {
-        <div class="alert alert-danger">{{ errorMessage }}</div>
-        }
+            <div class="brand-stats">
+                <div class="stat">
+                    <span class="stat-number">5,000+</span>
+                    <span class="stat-label">Happy Customers</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">50+</span>
+                    <span class="stat-label">Expert Technicians</span>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        @if (successMessage) {
-        <div class="alert alert-success">{{ successMessage }}</div>
-        }
+    <!-- Right Panel - Form -->
+    <div class="auth-form-panel">
+        <div class="auth-card" style="max-width: 480px;">
+            <h2>Create Account</h2>
+            <p>Fill in your details to get started</p>
 
-        <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="firstName" class="form-label">First Name *</label>
-                    <input type="text" class="form-control" id="firstName" name="firstName"
-                        [(ngModel)]="formData.firstName" required #firstNameInput="ngModel"
-                        [class.is-invalid]="firstNameInput.invalid && firstNameInput.touched">
-                    @if (firstNameInput.invalid && firstNameInput.touched) {
-                    <div class="invalid-feedback">Required</div>
+            @if (errorMessage) {
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-circle me-2"></i>{{ errorMessage }}
+            </div>
+            }
+
+            @if (successMessage) {
+            <div class="alert alert-success">
+                <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
+            </div>
+            }
+
+            <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="firstName" class="form-label">First Name *</label>
+                        <input type="text" class="form-control" id="firstName" formControlName="firstName"
+                            placeholder="First name" [class.is-invalid]="f['firstName'].invalid && submitted">
+                        @if (f['firstName'].invalid && submitted) {
+                        <div class="invalid-feedback">
+                            @if (f['firstName'].errors?.['required']) { First name is required }
+                            @if (f['firstName'].errors?.['invalidName']) { Only letters allowed }
+                        </div>
+                        }
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="lastName" class="form-label">Last Name *</label>
+                        <input type="text" class="form-control" id="lastName" formControlName="lastName"
+                            placeholder="Last name" [class.is-invalid]="f['lastName'].invalid && submitted">
+                        @if (f['lastName'].invalid && submitted) {
+                        <div class="invalid-feedback">
+                            @if (f['lastName'].errors?.['required']) { Last name is required }
+                            @if (f['lastName'].errors?.['invalidName']) { Only letters allowed }
+                        </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address *</label>
+                    <div class="input-group">
+                        <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" formControlName="email"
+                            placeholder="Enter email" [class.is-invalid]="f['email'].invalid && submitted">
+                    </div>
+                    @if (f['email'].invalid && submitted) {
+                    <div class="invalid-feedback">Valid email is required</div>
                     }
                 </div>
-                <div class="col-md-6 mb-3">
-                    <label for="lastName" class="form-label">Last Name *</label>
-                    <input type="text" class="form-control" id="lastName" name="lastName"
-                        [(ngModel)]="formData.lastName" required #lastNameInput="ngModel"
-                        [class.is-invalid]="lastNameInput.invalid && lastNameInput.touched">
-                    @if (lastNameInput.invalid && lastNameInput.touched) {
-                    <div class="invalid-feedback">Required</div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="phone" class="form-label">Phone Number *</label>
+                        <input type="tel" class="form-control" id="phone" formControlName="phone"
+                            placeholder="9876543210" [class.is-invalid]="f['phone'].invalid && submitted">
+                        @if (f['phone'].invalid && submitted) {
+                        <div class="invalid-feedback">10 digits required</div>
+                        }
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="password" class="form-label">Password *</label>
+                        <div class="input-group">
+                            <span class="input-icon"><i class="bi bi-lock"></i></span>
+                            <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password"
+                                formControlName="password" placeholder="Password"
+                                [class.is-invalid]="f['password'].invalid && submitted">
+                            <button type="button" class="password-toggle" (click)="togglePassword()">
+                                <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+                            </button>
+                        </div>
+                        <div class="password-requirements">
+                            <small [class.valid]="passwordErrors.hasMinLength">✓ 8+ characters</small>
+                            <small [class.valid]="passwordErrors.hasUpperCase">✓ Uppercase</small>
+                            <small [class.valid]="passwordErrors.hasLowerCase">✓ Lowercase</small>
+                            <small [class.valid]="passwordErrors.hasSpecialChar">✓ Special char</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="address" class="form-label">Address (optional)</label>
+                    <input type="text" class="form-control" id="address" formControlName="address"
+                        placeholder="Street address">
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label for="city" class="form-label">City</label>
+                        <input type="text" class="form-control" id="city" formControlName="city" placeholder="City">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="state" class="form-label">State</label>
+                        <input type="text" class="form-control" id="state" formControlName="state" placeholder="State">
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="zipCode" class="form-label">ZIP Code</label>
+                        <input type="text" class="form-control" id="zipCode" formControlName="zipCode"
+                            placeholder="ZIP Code">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-lg"
+                    [disabled]="registerForm.invalid || isLoading">
+                    @if (isLoading) {
+                    <span>Creating Account...</span>
+                    } @else {
+                    <span>Create Account</span>
                     }
-                </div>
-            </div>
+                </button>
+            </form>
 
-            <div class="mb-3">
-                <label for="email" class="form-label">Email *</label>
-                <input type="email" class="form-control" id="email" name="email" [(ngModel)]="formData.email" required
-                    email #emailInput="ngModel" [class.is-invalid]="emailInput.invalid && emailInput.touched">
-                @if (emailInput.invalid && emailInput.touched) {
-                <div class="invalid-feedback">Valid email required</div>
-                }
-            </div>
+            <div class="auth-divider"><span>or</span></div>
 
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label for="password" class="form-label">Password *</label>
-                    <input type="password" class="form-control" id="password" name="password"
-                        [(ngModel)]="formData.password" required minlength="6" #passwordInput="ngModel"
-                        [class.is-invalid]="passwordInput.invalid && passwordInput.touched">
-                    @if (passwordInput.invalid && passwordInput.touched) {
-                    <div class="invalid-feedback">Min 6 characters</div>
-                    }
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label for="phone" class="form-label">Phone *</label>
-                    <input type="tel" class="form-control" id="phone" name="phone" [(ngModel)]="formData.phone" required
-                        pattern="^[0-9]{10}$" #phoneInput="ngModel"
-                        [class.is-invalid]="phoneInput.invalid && phoneInput.touched">
-                    @if (phoneInput.invalid && phoneInput.touched) {
-                    <div class="invalid-feedback">10 digits required</div>
-                    }
-                </div>
-            </div>
+            <p class="text-center mb-0">
+                Already have an account? <a routerLink="/auth/login">Sign In</a>
+            </p>
 
-            <div class="mb-3">
-                <label for="address" class="form-label">Address</label>
-                <input type="text" class="form-control" id="address" name="address" [(ngModel)]="formData.address">
-            </div>
-
-            <div class="row">
-                <div class="col-md-4 mb-3">
-                    <label for="city" class="form-label">City</label>
-                    <input type="text" class="form-control" id="city" name="city" [(ngModel)]="formData.city">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label for="state" class="form-label">State</label>
-                    <input type="text" class="form-control" id="state" name="state" [(ngModel)]="formData.state">
-                </div>
-                <div class="col-md-4 mb-3">
-                    <label for="zipCode" class="form-label">Zip Code</label>
-                    <input type="text" class="form-control" id="zipCode" name="zipCode" [(ngModel)]="formData.zipCode">
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary w-100" [disabled]="registerForm.invalid || isLoading">
-                @if (isLoading) {
-                Loading...
-                } @else {
-                Register
-                }
-            </button>
-        </form>
-
-        <div class="auth-divider"><span>or</span></div>
-
-        <p class="text-center mb-0">
-            Already have an account? <a routerLink="/auth/login">Login</a>
-        </p>
+            <a routerLink="/" class="back-link">
+                <i class="bi bi-arrow-left me-1"></i> Back to Home
+            </a>
+        </div>
     </div>
 </div>
