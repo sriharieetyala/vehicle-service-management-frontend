@@ -1,0 +1,254 @@
+.page-container {
+    min-height: 100vh;
+    background: #f1f5f9;
+    padding: 2rem 0;
+}
+
+.page-header {
+    margin-bottom: 1.5rem;
+}
+
+.back-link {
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.back-link:hover {
+    color: #1a365d;
+}
+
+.page-header h1 {
+    color: #1a365d;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.loading,
+.empty-state {
+    text-align: center;
+    color: #64748b;
+    padding: 3rem;
+    background: white;
+    border-radius: 8px;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    opacity: 0.5;
+}
+
+.empty-state p {
+    margin: 1rem 0;
+}
+
+.customer-list {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+.list-header {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 1fr 1fr 1.2fr;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem;
+    background: #f8fafc;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #64748b;
+    text-transform: uppercase;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.customer-card {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 1fr 1fr 1.2fr;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    align-items: center;
+}
+
+.customer-card:last-child {
+    border-bottom: none;
+}
+
+.customer-card:hover {
+    background: #f8fafc;
+}
+
+.name {
+    font-weight: 600;
+    color: #1a365d;
+}
+
+.email {
+    color: #475569;
+    font-size: 0.9rem;
+}
+
+.phone {
+    color: #64748b;
+    font-size: 0.875rem;
+}
+
+.status-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.status-badge.active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge.inactive,
+.status-badge.deactivated {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-badge.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.role-badge {
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.role-badge.role-customer {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.role-badge.role-technician {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.role-badge.role-manager {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn {
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.8rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.btn-deactivate {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.btn-deactivate:hover {
+    background: #fecaca;
+}
+
+.btn-secondary {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+}
+
+.deactivated-text {
+    color: #94a3b8;
+    font-size: 0.8rem;
+    font-style: italic;
+}
+
+/* Modal */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    padding: 1.5rem;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #1a365d;
+    font-size: 1.1rem;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: #64748b;
+}
+
+.modal-body {
+    color: #475569;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+.modal-body p {
+    margin: 0 0 0.5rem;
+}
+
+.warning-text {
+    color: #ef4444;
+    font-size: 0.85rem;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
