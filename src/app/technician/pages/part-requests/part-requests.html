@@ -1,0 +1,82 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <a routerLink="/technician" class="back-link"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+                <h1>Part Requests</h1>
+            </div>
+            <button class="btn btn-primary" (click)="openRequestModal()">
+                <i class="bi bi-plus"></i> New Request
+            </button>
+        </div>
+
+        @if (isLoading) {
+        <div class="loading">Loading...</div>
+        } @else if (requests.length === 0) {
+        <div class="empty-state">
+            <i class="bi bi-box-seam"></i>
+            <p>No part requests yet</p>
+            <button class="btn btn-primary" (click)="openRequestModal()">Request a Part</button>
+        </div>
+        } @else {
+        <div class="request-list">
+            @for (r of requests; track r.id) {
+            <div class="request-card">
+                <div class="request-info">
+                    <h3>{{ r.partName }}</h3>
+                    <p>Quantity: {{ r.requestedQuantity }} · Service #{{ r.serviceRequestId }}</p>
+                    <p class="meta">{{ r.createdAt | date:'shortDate' }}</p>
+                </div>
+                <div class="status-badge" [class]="getStatusClass(r.status)">{{ r.status }}</div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</div>
+
+<!-- Request Part Modal -->
+@if (showRequestModal) {
+<div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Request Part</h3>
+            <button class="modal-close" (click)="closeModal()"><i class="bi bi-x"></i></button>
+        </div>
+        <form [formGroup]="requestForm" (ngSubmit)="submitRequest()">
+            <div class="form-group">
+                <label>Select Part *</label>
+                <select formControlName="partId">
+                    <option value="">Choose a part</option>
+                    @for (part of availableParts; track part.id) {
+                    <option [value]="part.id">{{ part.name }} ({{ part.partNumber }})</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Quantity *</label>
+                <input type="number" formControlName="quantity" min="1">
+            </div>
+            <div class="form-group">
+                <label>Service Request *</label>
+                <select formControlName="serviceRequestId">
+                    <option value="">Select assigned service</option>
+                    @for (service of assignedServices; track service.id) {
+                    <option [value]="service.id">#{{ service.id }} - {{ service.serviceType.replace('_', ' ') }}
+                    </option>
+                    }
+                </select>
+                @if (assignedServices.length === 0) {
+                <span class="field-error">No assigned services available</span>
+                }
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" [disabled]="requestForm.invalid || isSubmitting">
+                    {{ isSubmitting ? 'Submitting...' : 'Submit Request' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}
