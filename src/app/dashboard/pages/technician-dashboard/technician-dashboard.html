@@ -1,0 +1,72 @@
+<div class="dashboard-container">
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>Technician Dashboard</h1>
+            <div class="duty-toggle">
+                <span style="margin-right:10px">Duty Status:</span>
+                <button class="duty-btn" [class.on-duty]="isOnDuty" [class.off-duty]="!isOnDuty" (click)="toggleDuty()"
+                    [disabled]="isTogglingDuty">
+                    {{ isTogglingDuty ? 'Updating...' : (isOnDuty ? 'ON DUTY' : 'OFF DUTY') }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Section -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <div class="stat-icon"><i class="bi bi-list-task"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ assignedCount }}</span>
+                    <span class="stat-label">Assigned</span>
+                </div>
+            </div>
+            <div class="stat-box inprogress">
+                <div class="stat-icon"><i class="bi bi-gear"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ inProgressCount }}</span>
+                    <span class="stat-label">In Progress</span>
+                </div>
+            </div>
+            <div class="stat-box complete">
+                <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value">{{ completedCount }}</span>
+                    <span class="stat-label">Completed</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part Request Notifications -->
+        @if (approvedParts > 0 || rejectedParts > 0) {
+        <div style="margin-bottom:20px;padding:15px;background:white;border:1px solid #ddd;border-radius:4px">
+            <strong>Part Requests Update:</strong>
+            @if (approvedParts > 0) {
+            <span
+                style="margin-left:15px;padding:4px 10px;background:#d1fae5;color:#065f46;border-radius:4px;font-size:14px">
+                {{ approvedParts }} Approved
+            </span>
+            }
+            @if (rejectedParts > 0) {
+            <span
+                style="margin-left:10px;padding:4px 10px;background:#fee2e2;color:#991b1b;border-radius:4px;font-size:14px">
+                {{ rejectedParts }} Rejected
+            </span>
+            }
+            <a routerLink="/technician/part-requests" style="margin-left:15px;color:#f59e0b;font-size:14px">View
+                Details</a>
+        </div>
+        }
+
+        <h3>Quick Actions</h3>
+        <div class="action-cards">
+            @for (card of dashboardCards; track card.title) {
+            <div class="action-card">
+                <i class="bi {{ card.icon }}"></i>
+                <h5>{{ card.title }}</h5>
+                <p>{{ card.description }}</p>
+                <a [routerLink]="card.route" class="btn btn-go">GO</a>
+            </div>
+            }
+        </div>
+    </div>
+</div>

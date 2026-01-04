@@ -1,0 +1,92 @@
+.stats-row {
+    display: flex;
+    gap: 0;
+    margin-bottom: 20px;
+}
+
+.stat-box {
+    flex: 1;
+    background: white;
+    border: 1px solid #ddd;
+    padding: 20px;
+    text-align: center;
+}
+
+.stat-box:first-child {
+    border-radius: 4px 0 0 4px;
+}
+
+.stat-box:last-child {
+    border-radius: 0 4px 4px 0;
+}
+
+.stat-box+.stat-box {
+    border-left: none;
+}
+
+.stat-icon {
+    display: none;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-value {
+    font-size: 28px;
+    font-weight: bold;
+    display: block;
+}
+
+.stat-label {
+    font-size: 13px;
+    color: #666;
+    display: block;
+}
+
+/* Dashboard header with toggle */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dashboard-header h1 {
+    margin: 0;
+}
+
+.duty-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.duty-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.duty-btn.on-duty {
+    background: #10b981;
+    color: white;
+}
+
+.duty-btn.off-duty {
+    background: #ef4444;
+    color: white;
+}
+
+.duty-btn:hover {
+    opacity: 0.9;
+}
+
+.duty-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
