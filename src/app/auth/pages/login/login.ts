@@ -1,29 +1,44 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css'
 })
 export class Login {
-  email = '';
-  password = '';
+  loginForm: FormGroup;
   isLoading = false;
   errorMessage = '';
   successMessage = '';
+  showPassword = false;
+  submitted = false;
 
   constructor(
+    private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
-  ) { }
+  ) {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]]
+    });
+  }
+
+  // Easy access to form controls
+  get f() { return this.loginForm.controls; }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   onSubmit(): void {
-    if (!this.email || !this.password) {
+    this.submitted = true;
+    if (this.loginForm.invalid) {
       return;
     }
 
@@ -31,7 +46,9 @@ export class Login {
     this.errorMessage = '';
     this.successMessage = '';
 
-    this.authService.login(this.email, this.password).subscribe({
+    const { email, password } = this.loginForm.value;
+
+    this.authService.login(email, password).subscribe({
       next: (response) => {
         this.isLoading = false;
         this.successMessage = 'Login successful!';
@@ -49,12 +66,21 @@ export class Login {
         // Navigate based on role
         setTimeout(() => {
           const role = response.role.toUpperCase();
-          if (role === 'ADMIN') {
-            this.router.navigate(['/dashboard/admin']);
-          } else if (role === 'MANAGER') {
-            this.router.navigate(['/dashboard/manager']);
-          } else {
-            this.router.navigate(['/dashboard/customer']);
+          switch (role) {
+            case 'ADMIN':
+              this.router.navigate(['/admin']);
+              break;
+            case 'MANAGER':
+              this.router.navigate(['/manager']);
+              break;
+            case 'TECHNICIAN':
+              this.router.navigate(['/technician']);
+              break;
+            case 'INVENTORY_MANAGER':
+              this.router.navigate(['/inventory']);
+              break;
+            default:
+              this.router.navigate(['/customer']);
           }
         }, 500);
       },
