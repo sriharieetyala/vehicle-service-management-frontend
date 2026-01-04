@@ -1,0 +1,62 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <a routerLink="/inventory" class="back-link"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+                <h1>Pending Part Requests</h1>
+            </div>
+        </div>
+
+        @if (isLoading) {
+        <div class="loading">Loading...</div>
+        } @else if (requests.length === 0) {
+        <div class="empty-state">
+            <i class="bi bi-check-circle"></i>
+            <p>No pending requests</p>
+        </div>
+        } @else {
+        <div class="request-list">
+            @for (r of requests; track r.id) {
+            <div class="request-card">
+                <div class="request-info">
+                    <h3>{{ r.partName }}</h3>
+                    <p>Quantity: {{ r.requestedQuantity }}</p>
+                    <p class="meta">
+                        <span>Service #{{ r.serviceRequestId }}</span>
+                        <span>{{ r.createdAt | date:'shortDate' }}</span>
+                    </p>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-approve" (click)="approve(r.id)">
+                        <i class="bi bi-check"></i> Approve
+                    </button>
+                    <button class="btn btn-reject" (click)="openRejectModal(r)">
+                        <i class="bi bi-x"></i> Reject
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</div>
+
+<!-- Reject Confirmation Modal -->
+@if (showRejectModal && requestToReject) {
+<div class="modal-backdrop" (click)="closeRejectModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Reject Part Request</h3>
+            <button class="modal-close" (click)="closeRejectModal()"><i class="bi bi-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to reject the request for <strong>{{ requestToReject.partName }}</strong> (Qty: {{
+                requestToReject.requestedQuantity }})?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="closeRejectModal()">Cancel</button>
+            <button class="btn btn-reject" (click)="confirmReject()">Reject</button>
+        </div>
+    </div>
+</div>
+}

@@ -1,0 +1,49 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <a routerLink="/inventory" class="back-link"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+            <h1>Low Stock Alerts</h1>
+            <p class="subtitle">Parts that need reordering</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-box danger">
+                <span class="stat-value">{{ parts.length }}</span>
+                <span class="stat-label">Low Stock Items</span>
+            </div>
+        </div>
+
+        @if (isLoading) {
+        <div class="loading">Loading...</div>
+        } @else if (parts.length === 0) {
+        <div class="empty-state">
+            <i class="bi bi-check-circle"></i>
+            <p>All stock levels are healthy!</p>
+        </div>
+        } @else {
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Part #</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Stock</th>
+                    <th>Min Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (part of parts; track part.id) {
+                <tr class="low-stock">
+                    <td><code>{{ part.partNumber }}</code></td>
+                    <td><strong>{{ part.name }}</strong></td>
+                    <td>{{ part.category }}</td>
+                    <td style="color:red;font-weight:bold">{{ part.quantity }}</td>
+                    <td>{{ part.reorderLevel }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        }
+    </div>
+</div>

@@ -1,0 +1,147 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <div class="header-row">
+                <div>
+                    <a routerLink="/inventory" class="back-link"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+                    <h1>Inventory</h1>
+                    <p class="subtitle">All parts in stock</p>
+                </div>
+                <button class="btn btn-primary" (click)="openAddModal()">
+                    <i class="bi bi-plus-lg"></i> Add Part
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <span class="stat-value">{{ filteredParts.length }}</span>
+                <span class="stat-label">Total Parts</span>
+            </div>
+            <div class="stat-box danger" [class.danger]="lowStockCount > 0">
+                <span class="stat-value">{{ lowStockCount }}</span>
+                <span class="stat-label">Low Stock</span>
+            </div>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="filter-tabs">
+            <button [class.active]="categoryFilter === ''" (click)="filterByCategory('')">All</button>
+            @for (cat of categories; track cat) {
+            <button [class.active]="categoryFilter === cat" (click)="filterByCategory(cat)">{{ cat }}</button>
+            }
+        </div>
+
+        @if (isLoading) {
+        <div class="loading">Loading parts...</div>
+        } @else if (filteredParts.length === 0) {
+        <div class="empty-state">
+            <i class="bi bi-box"></i>
+            <p>No parts found</p>
+        </div>
+        } @else {
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Part #</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Min Stock</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (part of filteredParts; track part.id) {
+                <tr [class.low-stock]="part.lowStock">
+                    <td><code>{{ part.partNumber }}</code></td>
+                    <td><strong>{{ part.name }}</strong></td>
+                    <td>{{ part.category }}</td>
+                    <td>₹{{ part.unitPrice | number:'1.2-2' }}</td>
+                    <td>{{ part.quantity }}</td>
+                    <td>{{ part.reorderLevel }}</td>
+                    <td>
+                        @if (part.lowStock) {
+                        <span class="status-badge low">LOW STOCK</span>
+                        } @else {
+                        <span class="status-badge ok">OK</span>
+                        }
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        }
+    </div>
+</div>
+
+<!-- Add Part Modal -->
+@if (showAddModal) {
+<div class="modal-backdrop" (click)="closeAddModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+        <h3>Add New Part</h3>
+        <form [formGroup]="addPartForm" (ngSubmit)="submitAddPart()">
+            <div style="margin-bottom:12px">
+                <label>Part Name *</label><br>
+                <input type="text" formControlName="name" style="width:100%;padding:8px;border:1px solid #ccc">
+                @if (addPartForm.get('name')?.touched && addPartForm.get('name')?.invalid) {
+                <small style="color:red">Part name is required</small>
+                }
+            </div>
+            <div style="margin-bottom:12px">
+                <label>Part Number *</label><br>
+                <input type="text" formControlName="partNumber" style="width:100%;padding:8px;border:1px solid #ccc">
+                @if (addPartForm.get('partNumber')?.touched && addPartForm.get('partNumber')?.invalid) {
+                <small style="color:red">Part number is required</small>
+                }
+            </div>
+            <div style="margin-bottom:12px">
+                <label>Category *</label><br>
+                <select formControlName="category" style="width:100%;padding:8px;border:1px solid #ccc">
+                    <option value="">Select category</option>
+                    @for (cat of categories; track cat) {
+                    <option [value]="cat">{{ cat }}</option>
+                    }
+                </select>
+                @if (addPartForm.get('category')?.touched && addPartForm.get('category')?.invalid) {
+                <small style="color:red">Please select a category</small>
+                }
+            </div>
+            <div style="margin-bottom:12px">
+                <label>Price (₹) *</label><br>
+                <input type="number" formControlName="price" min="0.01" step="0.01"
+                    style="width:100%;padding:8px;border:1px solid #ccc">
+                @if (addPartForm.get('price')?.touched && addPartForm.get('price')?.invalid) {
+                <small style="color:red">Price must be at least ₹0.01</small>
+                }
+            </div>
+            <div style="margin-bottom:12px">
+                <label>Stock Quantity *</label><br>
+                <input type="number" formControlName="stockQuantity" min="0"
+                    style="width:100%;padding:8px;border:1px solid #ccc">
+                @if (addPartForm.get('stockQuantity')?.touched && addPartForm.get('stockQuantity')?.invalid) {
+                <small style="color:red">Quantity cannot be negative</small>
+                }
+            </div>
+            <div style="margin-bottom:12px">
+                <label>Minimum Stock *</label><br>
+                <input type="number" formControlName="minimumStock" min="1"
+                    style="width:100%;padding:8px;border:1px solid #ccc">
+                @if (addPartForm.get('minimumStock')?.touched && addPartForm.get('minimumStock')?.invalid) {
+                <small style="color:red">Minimum stock must be at least 1</small>
+                }
+            </div>
+            <div style="margin-top:15px">
+                <button type="button" (click)="closeAddModal()"
+                    style="padding:8px 16px;margin-right:10px;background:#eee;border:1px solid #ccc">Cancel</button>
+                <button type="submit" [disabled]="addPartForm.invalid || isSubmitting"
+                    style="padding:8px 16px;background:#f59e0b;color:white;border:none">
+                    {{ isSubmitting ? 'Adding...' : 'Add Part' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}
