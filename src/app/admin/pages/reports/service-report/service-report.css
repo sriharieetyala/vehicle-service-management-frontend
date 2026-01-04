@@ -1,0 +1,151 @@
+/* Page styles */
+.page-container {
+    min-height: 100vh;
+    background: #f1f5f9;
+    padding: 2rem 0;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.page-header {
+    margin-bottom: 2rem;
+}
+
+.back-link {
+    color: #64748b;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.back-link:hover {
+    color: #1a365d;
+}
+
+h1 {
+    color: #1a365d;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.subtitle {
+    color: #64748b;
+    margin: 0.5rem 0 0;
+}
+
+/* Stats */
+.stats-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.stat-box {
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 120px;
+    flex: 1;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.stat-box.pending .stat-value {
+    color: #d97706;
+}
+
+.stat-box.assigned .stat-value {
+    color: #0369a1;
+}
+
+.stat-box.progress .stat-value {
+    color: #7c3aed;
+}
+
+.stat-box.completed .stat-value {
+    color: #059669;
+}
+
+/* Table */
+.data-table {
+    width: 100%;
+    background: white;
+    border-radius: 8px;
+    border-collapse: collapse;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.data-table th {
+    background: #1a365d;
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 500;
+}
+
+.data-table td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Status badge */
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.assigned {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.status-badge.in-progress {
+    background: #ede9fe;
+    color: #7c3aed;
+}
+
+.status-badge.completed,
+.status-badge.closed {
+    background: #d1fae5;
+    color: #059669;
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: #64748b;
+}

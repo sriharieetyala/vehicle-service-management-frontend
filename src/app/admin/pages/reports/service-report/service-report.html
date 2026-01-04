@@ -1,0 +1,59 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <a routerLink="/admin" class="back-link"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+            <h1><i class="bi bi-file-earmark-bar-graph"></i> Service Report</h1>
+            <p class="subtitle">Overview of all service requests</p>
+        </div>
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-box pending">
+                <span class="stat-value">{{ pendingCount }}</span>
+                <span class="stat-label">Pending</span>
+            </div>
+            <div class="stat-box assigned">
+                <span class="stat-value">{{ assignedCount }}</span>
+                <span class="stat-label">Assigned</span>
+            </div>
+            <div class="stat-box progress">
+                <span class="stat-value">{{ inProgressCount }}</span>
+                <span class="stat-label">In Progress</span>
+            </div>
+            <div class="stat-box completed">
+                <span class="stat-value">{{ completedCount }}</span>
+                <span class="stat-label">Completed</span>
+            </div>
+        </div>
+
+        @if (isLoading) {
+        <div class="loading">Loading report...</div>
+        } @else {
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Bay</th>
+                    <th>Created</th>
+                    <th>Completed</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (r of requests; track r.id) {
+                <tr>
+                    <td>#{{ r.id }}</td>
+                    <td>{{ r.serviceType.replace('_', ' ') }}</td>
+                    <td><span class="status-badge" [class]="getStatusClass(r.status)">{{ r.status.replace('_', ' ')
+                            }}</span></td>
+                    <td>{{ r.bayNumber || '-' }}</td>
+                    <td>{{ r.createdAt | date:'short' }}</td>
+                    <td>{{ r.completedAt ? (r.completedAt | date:'short') : '-' }}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        }
+    </div>
+</div>

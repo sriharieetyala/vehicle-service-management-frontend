@@ -1,0 +1,126 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <a routerLink="/admin" class="back-link"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+            <h1>Reports & Analytics</h1>
+        </div>
+
+        <!-- Filter -->
+        <div style="margin-bottom:20px">
+            <strong>Filter:</strong>
+            <select [(ngModel)]="selectedMonth" (change)="filterByMonth()" style="margin-left:10px;padding:5px">
+                <option value="">All Time</option>
+                @for (m of months; track m.value) {
+                <option [value]="m.value">{{ m.label }}</option>
+                }
+            </select>
+        </div>
+
+        <!-- Revenue Summary -->
+        <table border="1" cellpadding="10" style="margin-bottom:20px;border-collapse:collapse">
+            <tr>
+                <td><strong>Today</strong><br>₹{{ todayRevenue | number:'1.0-0' }}</td>
+                <td><strong>Yesterday</strong><br>₹{{ yesterdayRevenue | number:'1.0-0' }}</td>
+                <td><strong>Total Revenue</strong><br>₹{{ totalRevenue | number:'1.0-0' }}</td>
+                <td><strong>Completed</strong><br>{{ completedCount }}</td>
+                <td><strong>Customers</strong><br>{{ customerCount }}</td>
+            </tr>
+        </table>
+
+        <!-- Service Status -->
+        <p><strong>Pending:</strong> {{ stats.pendingRequests }} | <strong>In Progress:</strong> {{
+            stats.inProgressRequests }} | <strong>Closed:</strong> {{ closedInPeriod }} |
+            <strong>Total:</strong> {{ stats.totalRequests }}
+        </p>
+
+        <hr style="margin:20px 0">
+
+        <!-- Charts -->
+        <div style="display:flex;gap:30px;margin-bottom:30px">
+            <div style="flex:1">
+                <h3>Revenue by Service Type</h3>
+                <div style="max-width:250px">
+                    <canvas #serviceChart></canvas>
+                </div>
+            </div>
+            <div style="flex:1">
+                <h3>Technician Workload</h3>
+                <canvas #techChart></canvas>
+            </div>
+        </div>
+
+        <hr style="margin:20px 0">
+
+        <!-- Technician Performance -->
+        @if (technicianPerformance.length > 0) {
+        <h3>Technician Performance</h3>
+        <table border="1" cellpadding="8" style="width:100%;border-collapse:collapse;margin-bottom:20px">
+            <tr style="background:#f0f0f0">
+                <th>S.No</th>
+                <th>Technician</th>
+                <th>Jobs</th>
+                <th>Revenue</th>
+            </tr>
+            @for (t of technicianPerformance; track t.id; let i = $index) {
+            <tr>
+                <td>{{ i + 1 }}</td>
+                <td>{{ t.name }}</td>
+                <td>{{ t.jobs }}</td>
+                <td>₹{{ t.revenue | number:'1.0-0' }}</td>
+            </tr>
+            }
+        </table>
+        }
+
+        <!-- Vehicle History -->
+        @if (vehicleHistory.length > 0) {
+        <h3>Vehicle Service History</h3>
+        <table border="1" cellpadding="8" style="width:100%;border-collapse:collapse;margin-bottom:20px">
+            <tr style="background:#f0f0f0">
+                <th>S.No</th>
+                <th>Vehicle</th>
+                <th>Services</th>
+                <th>Total Spent</th>
+            </tr>
+            @for (v of vehicleHistory; track v.vehicleId; let i = $index) {
+            <tr>
+                <td>{{ i + 1 }}</td>
+                <td>{{ v.plate }}</td>
+                <td>{{ v.services }}</td>
+                <td>₹{{ v.totalSpent | number:'1.0-0' }}</td>
+            </tr>
+            }
+        </table>
+        }
+
+        <!-- Completed Services -->
+        <h3>Completed Services ({{ completedCount }})</h3>
+
+        @if (isLoading) {
+        <p>Loading...</p>
+        } @else if (requests.length === 0) {
+        <p>No completed services found</p>
+        } @else {
+        <table border="1" cellpadding="8" style="width:100%;border-collapse:collapse">
+            <tr style="background:#f0f0f0">
+                <th>S.No</th>
+                <th>ID</th>
+                <th>Service Type</th>
+                <th>Vehicle</th>
+                <th>Completed</th>
+                <th>Total</th>
+            </tr>
+            @for (r of requests; track r.id; let i = $index) {
+            <tr>
+                <td>{{ i + 1 }}</td>
+                <td>#{{ r.id }}</td>
+                <td>{{ r.serviceType.replace('_', ' ') }}</td>
+                <td>Vehicle #{{ r.vehicleId }}</td>
+                <td>{{ r.completedAt | date:'shortDate' }}</td>
+                <td>₹{{ r.finalCost || 0 | number:'1.0-0' }}</td>
+            </tr>
+            }
+        </table>
+        }
+    </div>
+</div>
