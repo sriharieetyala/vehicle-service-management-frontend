@@ -1,0 +1,60 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <a routerLink="/customer" class="back-link"><i class="bi bi-arrow-left"></i> Back</a>
+            <h1>My Invoices</h1>
+        </div>
+
+        <!-- Total -->
+        <div class="total-box">
+            <span>Total Spent: <strong>₹{{ totalSpent | number:'1.2-2' }}</strong></span>
+        </div>
+
+        @if (isLoading) {
+        <p>Loading...</p>
+        } @else if (invoices.length === 0) {
+        <p>No invoices yet.</p>
+        } @else {
+        <table class="simple-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Service</th>
+                    <th>Date</th>
+                    <th>Labor</th>
+                    <th>Parts</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (inv of invoices; track inv.id) {
+                <tr>
+                    <td>#{{ inv.id }}</td>
+                    <td>{{ inv.serviceType.replace('_', ' ') }}</td>
+                    <td>{{ inv.completedAt | date:'shortDate' }}</td>
+                    <td>₹{{ inv.laborCost || 0 | number:'1.0-0' }}</td>
+                    <td>₹{{ inv.partsCost || 0 | number:'1.0-0' }}</td>
+                    <td><strong>₹{{ inv.finalCost || inv.totalCost || 0 | number:'1.0-0' }}</strong></td>
+                    <td>
+                        @if (isPaid(inv.status)) {
+                        <span class="badge paid">PAID</span>
+                        } @else {
+                        <span class="badge pending">PENDING</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!isPaid(inv.status)) {
+                        <button class="btn-pay" (click)="payInvoice(inv)">Pay Now</button>
+                        } @else {
+                        <span class="paid-text">✓ Paid</span>
+                        }
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        }
+    </div>
+</div>

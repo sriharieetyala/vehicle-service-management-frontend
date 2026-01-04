@@ -1,0 +1,85 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <a routerLink="/customer" class="back-link"><i class="bi bi-arrow-left"></i> Back</a>
+            <h1>Book a Service</h1>
+        </div>
+
+        @if (isLoading) {
+        <p>Loading vehicles...</p>
+        } @else if (vehicles.length === 0) {
+        <div class="empty-box">
+            <p>You need to register a vehicle first.</p>
+            <a routerLink="/customer/vehicles" class="btn-link">Add Vehicle</a>
+        </div>
+        } @else {
+        <div class="form-box">
+            @if (errorMessage) {
+            <div class="error-msg">{{ errorMessage }}</div>
+            }
+
+            <form [formGroup]="serviceForm" (ngSubmit)="submitService()">
+                <div class="form-group">
+                    <label>Vehicle *</label>
+                    <select formControlName="vehicleId">
+                        <option value="">Choose a vehicle</option>
+                        @for (v of vehicles; track v.id) {
+                        <option [value]="v.id">{{ v.brand }} {{ v.model }} - {{ v.plateNumber }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Service Type *</label>
+                    <select formControlName="serviceType">
+                        <option value="">Select service</option>
+                        @for (type of serviceTypes; track type) {
+                        <option [value]="type">{{ formatServiceType(type) }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Preferred Date *</label>
+                    <input type="date" formControlName="preferredDate" [min]="minDate">
+                </div>
+
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select formControlName="priority">
+                        <option value="NORMAL">Normal</option>
+                        <option value="URGENT">Urgent</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Description (optional)</label>
+                    <textarea formControlName="description" rows="3" placeholder="Describe the issue..."></textarea>
+                </div>
+
+                <div class="form-group pickup-section">
+                    <label class="checkbox-label">
+                        <input type="checkbox" formControlName="pickupRequired">
+                        <span>I need VSMS to pick up my vehicle</span>
+                    </label>
+                </div>
+
+                @if (serviceForm.value.pickupRequired) {
+                <div class="form-group">
+                    <label>Pickup Address *</label>
+                    <textarea formControlName="pickupAddress" rows="2"
+                        placeholder="Enter full address for vehicle pickup..."></textarea>
+                </div>
+                }
+
+                <div class="form-actions">
+                    <a routerLink="/customer" class="btn-cancel">Cancel</a>
+                    <button type="submit" class="btn-submit" [disabled]="serviceForm.invalid || isSubmitting">
+                        {{ isSubmitting ? 'Booking...' : 'Book Service' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+        }
+    </div>
+</div>

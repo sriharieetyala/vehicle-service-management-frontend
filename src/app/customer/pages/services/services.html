@@ -1,0 +1,119 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <a routerLink="/customer" class="back-link"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+                <h1>Service History</h1>
+            </div>
+            <a routerLink="/customer/book-service" class="btn btn-primary">
+                <i class="bi bi-plus"></i> Book Service
+            </a>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <select [(ngModel)]="selectedStatus" (change)="applyFilter()">
+                @for (s of statuses; track s) {
+                <option [value]="s">{{ s }}</option>
+                }
+            </select>
+            <span class="result-count">{{ services.length }} results</span>
+        </div>
+
+        @if (isLoading) {
+        <div class="loading">Loading...</div>
+        } @else if (services.length === 0) {
+        <div class="empty-state">
+            <i class="bi bi-clipboard-check"></i>
+            <p>No service requests found</p>
+            <a routerLink="/customer/book-service" class="btn btn-primary">Book Your First Service</a>
+        </div>
+        } @else {
+        <div class="service-list">
+            @for (s of services; track s.id) {
+            <div class="service-card">
+                <!-- Header: Status + Bay -->
+                <div class="card-header">
+                    <span class="service-status" [class]="getStatusClass(s.status)">
+                        {{ s.status.replace('_', ' ') }}
+                    </span>
+                    @if (s.bayNumber) {
+                    <span class="bay-badge">Bay {{ s.bayNumber }}</span>
+                    }
+                </div>
+
+                <!-- Content -->
+                <div class="card-content">
+                    <h3>{{ s.serviceType.replace('_', ' ') }}</h3>
+                    <p class="description">{{ s.description || 'No description provided' }}</p>
+                    <div class="meta-info">
+                        <span><i class="bi bi-car-front"></i> Vehicle #{{ s.vehicleId }}</span>
+                        <span><i class="bi bi-clock"></i> {{ s.createdAt | date:'MMM d, yyyy' }}</span>
+                        @if (s.preferredDate) {
+                        <span><i class="bi bi-calendar-check"></i> {{ s.preferredDate | date:'MMM d' }}</span>
+                        }
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                @if (canReschedule(s.status) || canCancel(s.status)) {
+                <div class="card-actions">
+                    @if (canReschedule(s.status)) {
+                    <button class="action-btn reschedule" (click)="openRescheduleModal(s)">
+                        <i class="bi bi-calendar-event"></i> Reschedule
+                    </button>
+                    }
+                    @if (canCancel(s.status)) {
+                    <button class="action-btn cancel" (click)="openCancelModal(s)">
+                        <i class="bi bi-x-circle"></i> Cancel
+                    </button>
+                    }
+                </div>
+                }
+            </div>
+            }
+        </div>
+        }
+    </div>
+</div>
+
+<!-- Cancel Confirmation Modal -->
+@if (showCancelModal && serviceToCancel) {
+<div class="modal-backdrop" (click)="closeCancelModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Cancel Service Request</h3>
+            <button class="modal-close" (click)="closeCancelModal()"><i class="bi bi-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to cancel this <strong>{{ serviceToCancel.serviceType.replace('_', ' ') }}</strong>
+                service?</p>
+            <p class="warning-text">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="closeCancelModal()">No, Keep It</button>
+            <button class="btn btn-danger" (click)="confirmCancel()">Yes, Cancel</button>
+        </div>
+    </div>
+</div>
+}
+
+<!-- Reschedule Modal -->
+@if (showRescheduleModal && serviceToReschedule) {
+<div class="modal-backdrop" (click)="closeRescheduleModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Reschedule Service</h3>
+            <button class="modal-close" (click)="closeRescheduleModal()"><i class="bi bi-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <p>Select a new preferred date:</p>
+            <input type="date" [(ngModel)]="newDate" [min]="minDate" class="date-input">
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="closeRescheduleModal()">Cancel</button>
+            <button class="btn btn-primary" (click)="confirmReschedule()" [disabled]="!newDate">Reschedule</button>
+        </div>
+    </div>
+</div>
+}

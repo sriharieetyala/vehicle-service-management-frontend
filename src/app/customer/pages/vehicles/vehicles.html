@@ -1,0 +1,153 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <a routerLink="/customer" class="back-link"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+                <h1>My Vehicles</h1>
+            </div>
+            <button class="btn btn-primary" (click)="openAddModal()">
+                <i class="bi bi-plus"></i> Add Vehicle
+            </button>
+        </div>
+
+        @if (isLoading) {
+        <div class="loading">Loading...</div>
+        } @else if (vehicles.length === 0) {
+        <div class="empty-state">
+            <i class="bi bi-car-front"></i>
+            <p>No vehicles registered yet</p>
+            <button class="btn btn-primary" (click)="openAddModal()">Add Your First Vehicle</button>
+        </div>
+        } @else {
+        <div class="vehicle-list">
+            @for (v of vehicles; track v.id) {
+            <div class="vehicle-card">
+                <div class="vehicle-icon"><i class="bi bi-car-front-fill"></i></div>
+                <div class="vehicle-main">
+                    <span class="name">{{ v.brand }} {{ v.model }}</span>
+                    <span class="year">{{ v.year }}</span>
+                </div>
+                <div class="vehicle-meta">
+                    <span class="plate"><i class="bi bi-upc"></i> {{ v.plateNumber }}</span>
+                    <span class="fuel"><i class="bi bi-fuel-pump"></i> {{ formatEnum(v.fuelType) }}</span>
+                    <span class="type"><i class="bi bi-gear"></i> {{ formatEnum(v.vehicleType) }}</span>
+                </div>
+                <div class="vehicle-actions">
+                    <a [routerLink]="['/customer/services']" [queryParams]="{vehicleId: v.id}" class="btn-history"
+                        title="View History">
+                        <i class="bi bi-clock-history"></i> History
+                    </a>
+                    <button class="btn-delete" (click)="openDeleteModal(v)" title="Delete">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</div>
+
+<!-- Add Vehicle Modal -->
+@if (showAddModal) {
+<div class="modal-backdrop" (click)="closeAddModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Add Vehicle</h3>
+            <button class="modal-close" (click)="closeAddModal()"><i class="bi bi-x"></i></button>
+        </div>
+
+        @if (errorMessage) {
+        <div class="error-msg">{{ errorMessage }}</div>
+        }
+
+        <form [formGroup]="vehicleForm" (ngSubmit)="submitVehicle()">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Brand *</label>
+                    <input type="text" formControlName="brand" placeholder="Toyota, Honda...">
+                    @if (f['brand'].touched && f['brand'].errors) {
+                    <span class="field-error">Brand is required (min 2 chars)</span>
+                    }
+                </div>
+                <div class="form-group">
+                    <label>Model *</label>
+                    <input type="text" formControlName="model" placeholder="Camry, Civic...">
+                    @if (f['model'].touched && f['model'].errors) {
+                    <span class="field-error">Model is required</span>
+                    }
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Year *</label>
+                    <input type="number" formControlName="year" placeholder="2020">
+                    @if (f['year'].touched && f['year'].errors) {
+                    <span class="field-error">Year must be 1990-2026</span>
+                    }
+                </div>
+                <div class="form-group">
+                    <label>License Plate *</label>
+                    <input type="text" formControlName="plateNumber" placeholder="KA01AB1234"
+                        style="text-transform:uppercase">
+                    @if (f['plateNumber'].touched && f['plateNumber'].errors) {
+                    <span class="field-error">Format: KA01AB1234</span>
+                    }
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Fuel Type *</label>
+                    <select formControlName="fuelType">
+                        <option value="">Select fuel</option>
+                        @for (fuel of fuelTypes; track fuel) {
+                        <option [value]="fuel">{{ formatEnum(fuel) }}</option>
+                        }
+                    </select>
+                    @if (f['fuelType'].touched && f['fuelType'].errors) {
+                    <span class="field-error">Fuel type is required</span>
+                    }
+                </div>
+                <div class="form-group">
+                    <label>Vehicle Type *</label>
+                    <select formControlName="vehicleType">
+                        <option value="">Select type</option>
+                        @for (type of vehicleTypes; track type) {
+                        <option [value]="type">{{ formatEnum(type) }}</option>
+                        }
+                    </select>
+                    @if (f['vehicleType'].touched && f['vehicleType'].errors) {
+                    <span class="field-error">Vehicle type is required</span>
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeAddModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" [disabled]="vehicleForm.invalid || isSubmitting">
+                    {{ isSubmitting ? 'Adding...' : 'Add Vehicle' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}
+
+<!-- Delete Confirmation Modal -->
+@if (showDeleteModal && vehicleToDelete) {
+<div class="modal-backdrop" (click)="closeDeleteModal()">
+    <div class="modal-content modal-sm" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Delete Vehicle</h3>
+            <button class="modal-close" (click)="closeDeleteModal()"><i class="bi bi-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to delete <strong>{{ vehicleToDelete.brand }} {{ vehicleToDelete.model }}</strong>
+                ({{ vehicleToDelete.plateNumber }})?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+            <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+        </div>
+    </div>
+</div>
+}
