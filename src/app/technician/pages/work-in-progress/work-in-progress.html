@@ -1,0 +1,66 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <a routerLink="/technician" class="back-link"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+                <h1>Work In Progress</h1>
+            </div>
+        </div>
+
+        @if (isLoading) {
+        <div class="loading">Loading...</div>
+        } @else if (tasks.length === 0) {
+        <div class="empty-state">
+            <i class="bi bi-clipboard-check"></i>
+            <p>No tasks currently in progress</p>
+        </div>
+        } @else {
+        <div class="task-list">
+            @for (task of tasks; track task.id) {
+            <div class="task-card">
+                <div class="task-info">
+                    <h3>{{ task.serviceType.replace('_', ' ') }}</h3>
+                    <p>{{ task.description || 'No description' }}</p>
+                    <p class="meta">
+                        <span><i class="bi bi-geo-alt"></i> Bay {{ task.bayNumber || '-' }}</span>
+                        <span><i class="bi bi-calendar"></i> {{ task.createdAt | date:'shortDate' }}</span>
+                    </p>
+                </div>
+                <div class="task-actions">
+                    <div class="status-badge in-progress">IN PROGRESS</div>
+                    <button class="btn btn-success" (click)="openCompleteModal(task)">
+                        <i class="bi bi-check-lg"></i> Mark Complete
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</div>
+
+<!-- Complete Modal with Remarks -->
+@if (showCompleteModal) {
+<div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Complete Task</h3>
+            <button class="modal-close" (click)="closeModal()"><i class="bi bi-x"></i></button>
+        </div>
+
+        <form [formGroup]="remarksForm" (ngSubmit)="submitComplete()">
+            <div class="form-group">
+                <label>Remarks (Optional)</label>
+                <textarea formControlName="remarks" rows="4"
+                    placeholder="Enter any notes about the work completed..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-success" [disabled]="isSubmitting">
+                    {{ isSubmitting ? 'Completing...' : 'Complete Task' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}
