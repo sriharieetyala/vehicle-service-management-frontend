@@ -1,0 +1,49 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <a routerLink="/manager" class="back-link"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+            <h1>Service Progress</h1>
+            <p class="subtitle">Services currently in progress</p>
+        </div>
+
+        @if (isLoading) {
+        <div class="loading">Loading...</div>
+        } @else if (requests.length === 0) {
+        <div class="empty-state">
+            <i class="bi bi-check-circle"></i>
+            <p>No services in progress</p>
+        </div>
+        } @else {
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Vehicle</th>
+                    <th>Issue</th>
+                    <th>Priority</th>
+                    <th>Bay</th>
+                    <th>Technician</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (req of requests; track req.id) {
+                <tr>
+                    <td>#{{ req.id }}</td>
+                    <td>{{ req.vehiclePlate || 'N/A' }}</td>
+                    <td>{{ req.issueDescription }}</td>
+                    <td><span class="badge" [class.urgent]="req.priority === 'URGENT'">{{ req.priority }}</span></td>
+                    <td>Bay {{ req.bayNumber || '-' }}</td>
+                    <td>{{ req.technicianName || 'Unassigned' }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-success" (click)="markCompleted(req.id)">
+                            <i class="bi bi-check"></i> Mark Complete
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+        }
+    </div>
+</div>
