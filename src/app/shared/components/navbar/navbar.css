@@ -1,38 +1,342 @@
 .navbar {
-    padding: 0.75rem 0;
+    background: white;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-gray-300);
+    position: relative;
+}
+
+.navbar .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .navbar-brand {
+    font-weight: 600;
     font-size: 1.25rem;
-    color: var(--primary);
+    color: var(--color-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
 }
 
-.navbar-brand:hover {
-    color: var(--primary-dark);
+.navbar-brand i {
+    color: var(--color-accent);
+}
+
+.brand-text {
+    color: var(--color-primary);
+}
+
+/* Hamburger Toggle */
+.navbar-toggler {
+    display: none;
+    background: none;
+    border: 1px solid var(--color-gray-300);
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.25rem;
+    color: var(--color-gray-700);
+}
+
+.navbar-toggler:hover {
+    background: var(--color-gray-100);
+}
+
+/* Nav Collapse */
+.navbar-collapse {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.navbar-nav {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 0.5rem;
 }
 
 .nav-link {
-    font-weight: 500;
-    color: var(--text-secondary);
-    padding: 0.5rem 1rem !important;
+    color: var(--color-gray-700);
+    padding: 0.5rem 1rem;
+    text-decoration: none;
+    border-radius: 6px;
 }
 
 .nav-link:hover,
 .nav-link.active {
-    color: var(--primary);
+    color: var(--color-primary);
 }
 
-@media (max-width: 991.98px) {
+.nav-auth {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Profile Dropdown */
+.profile-dropdown {
+    position: relative;
+}
+
+.profile-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: none;
+    border: 1px solid var(--color-gray-300);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    color: var(--color-gray-700);
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.profile-btn:hover {
+    background: var(--color-gray-100);
+    border-color: var(--color-primary);
+}
+
+.profile-btn i:first-child {
+    font-size: 1.25rem;
+    color: var(--color-primary);
+}
+
+.profile-btn .bi-chevron-down {
+    font-size: 0.75rem;
+    transition: transform 0.2s;
+}
+
+.profile-btn .bi-chevron-down.rotate {
+    transform: rotate(180deg);
+}
+
+/* Dropdown menu - hidden by default */
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    background: white;
+    border: 1px solid var(--color-gray-200);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    min-width: 180px;
+    z-index: 1000;
+    overflow: hidden;
+    display: none;
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: var(--color-gray-700);
+    text-decoration: none;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.dropdown-item:hover {
+    background: var(--color-gray-100);
+}
+
+.dropdown-item.text-danger {
+    color: #dc3545;
+}
+
+.dropdown-item.text-danger:hover {
+    background: #fee2e2;
+}
+
+/* Mobile Styles */
+@media (max-width: 991px) {
+    .navbar-toggler {
+        display: block;
+    }
+
     .navbar-collapse {
-        padding: 1rem 0;
-    }
-
-    .nav-item {
-        margin-bottom: 0.5rem;
-    }
-
-    .btn {
+        display: none;
         width: 100%;
-        margin-top: 0.5rem;
+        flex-direction: column;
+        align-items: stretch;
+        padding-top: 1rem;
+        gap: 1rem;
     }
+
+    .navbar-collapse.show {
+        display: flex;
+    }
+
+    .navbar-nav {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-link {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid var(--color-gray-200);
+    }
+
+    .nav-auth {
+        flex-direction: column;
+        width: 100%;
+        padding-top: 1rem;
+        border-top: 1px solid var(--color-gray-200);
+    }
+
+    .nav-auth .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .profile-dropdown {
+        width: 100%;
+    }
+
+    .profile-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .dropdown-menu {
+        position: static;
+        margin-top: 0.5rem;
+        width: 100%;
+        box-shadow: none;
+        border: 1px solid var(--color-gray-200);
+    }
+}
+
+/* Dashboard link - bold when active */
+.dashboard-link.active {
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+/* Simple Logout Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-box {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.modal-box p {
+    color: #1a365d;
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 0 1.25rem;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+}
+
+.modal-actions .btn {
+    min-width: 80px;
+    padding: 0.6rem 1.25rem;
+    font-weight: 500;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.btn-cancel:hover {
+    background: #cbd5e1;
+}
+
+.btn-confirm {
+    background: #1a365d;
+    color: white;
+}
+
+.btn-confirm:hover {
+    background: #0f2744;
+}
+
+/* Modal Form (larger) */
+.modal-form {
+    max-width: 400px;
+    text-align: left;
+}
+
+.modal-form h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a365d;
+    margin-bottom: 1rem;
+}
+
+.modal-form .form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #475569;
+}
+
+.modal-form .form-control {
+    border-radius: 6px;
+}
+
+.modal-form .modal-actions {
+    margin-top: 1.5rem;
+    justify-content: flex-end;
+}
+
+/* Dropdown divider */
+.dropdown-divider {
+    height: 1px;
+    background: #e2e8f0;
+    margin: 0.5rem 0;
+}
+
+/* Danger button */
+.btn-danger {
+    background: #dc2626;
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+.text-danger {
+    color: #dc2626 !important;
 }
