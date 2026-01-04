@@ -1,0 +1,69 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <a routerLink="/manager" class="back-link"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+            <h1>Bay Management</h1>
+            <p class="subtitle">Service bay occupancy status</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-box occupied">
+                <span class="stat-value">{{ occupiedCount }}</span>
+                <span class="stat-label">Occupied</span>
+            </div>
+            <div class="stat-box free">
+                <span class="stat-value">{{ freeCount }}</span>
+                <span class="stat-label">Available</span>
+            </div>
+        </div>
+
+        <!-- Bay Buttons Grid -->
+        <h3 class="section-title">Service Bays</h3>
+        @if (isLoading) {
+        <div class="loading">Loading bays...</div>
+        } @else {
+        <div class="bay-grid">
+            @for (bay of bays; track bay.bayNumber) {
+            <div class="bay-button" [class.occupied]="bay.status === 'OCCUPIED'" [class.free]="bay.status === 'FREE'">
+                <span class="bay-number">{{ bay.bayNumber }}</span>
+                <span class="bay-status">{{ bay.status }}</span>
+                @if (bay.status === 'OCCUPIED') {
+                <div class="bay-info">
+                    <span><i class="bi bi-car-front-fill"></i> {{ bay.vehiclePlate || 'N/A' }}</span>
+                    <span><i class="bi bi-person-badge"></i> {{ bay.technicianName || 'N/A' }}</span>
+                </div>
+                }
+            </div>
+            }
+        </div>
+        }
+
+        <!-- Occupied Bays Details Table -->
+        @if (!isLoading && occupiedCount > 0) {
+        <h3 class="section-title">Occupied Bay Details</h3>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Bay</th>
+                    <th>Vehicle</th>
+                    <th>Technician</th>
+                    <th>Service ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (bay of bays; track bay.bayNumber) {
+                @if (bay.status === 'OCCUPIED') {
+                <tr>
+                    <td><strong>Bay {{ bay.bayNumber }}</strong></td>
+                    <td>{{ bay.vehiclePlate || '-' }}</td>
+                    <td>{{ bay.technicianName || '-' }}</td>
+                    <td>{{ bay.serviceRequestId ? '#' + bay.serviceRequestId : '-' }}</td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+        }
+    </div>
+</div>
