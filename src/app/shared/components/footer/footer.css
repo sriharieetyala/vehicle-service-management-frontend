@@ -1,9 +1,18 @@
 .footer {
+    background: var(--color-gray-900);
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
     margin-top: auto;
 }
 
-@media (max-width: 767.98px) {
-    .footer {
-        text-align: center;
-    }
+.footer-brand {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.footer p {
+    margin: 0;
+    color: var(--color-gray-500);
+    font-size: 0.875rem;
 }
