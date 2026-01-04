@@ -1,0 +1,163 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <a routerLink="/manager" class="back-link"><i class="bi bi-arrow-left"></i> Back</a>
+                <h1>Service Requests</h1>
+            </div>
+        </div>
+
+        <!-- Status Filter -->
+        <div class="filter-tabs">
+            <button [class.active]="statusFilter === ''" (click)="filterByStatus('')">All</button>
+            <button [class.active]="statusFilter === 'PENDING'" (click)="filterByStatus('PENDING')">Pending</button>
+            <button [class.active]="statusFilter === 'ASSIGNED'" (click)="filterByStatus('ASSIGNED')">Assigned</button>
+            <button [class.active]="statusFilter === 'IN_PROGRESS'" (click)="filterByStatus('IN_PROGRESS')">In
+                Progress</button>
+            <button [class.active]="statusFilter === 'COMPLETED'"
+                (click)="filterByStatus('COMPLETED')">Completed</button>
+            <button [class.active]="statusFilter === 'CLOSED'" (click)="filterByStatus('CLOSED')">Closed (Paid)</button>
+        </div>
+
+        <!-- Payment Filter -->
+        <div class="filter-tabs payment-filter">
+            <span class="filter-label">Payment:</span>
+            <button [class.active]="paymentFilter === ''" (click)="filterByPayment('')">All</button>
+            <button [class.active]="paymentFilter === 'unpaid'" (click)="filterByPayment('unpaid')">Unpaid</button>
+            <button [class.active]="paymentFilter === 'paid'" (click)="filterByPayment('paid')">Paid</button>
+        </div>
+
+        @if (isLoading) {
+        <div class="loading">Loading...</div>
+        } @else if (requests.length === 0) {
+        <div class="empty-state">
+            <i class="bi bi-clipboard"></i>
+            <p>No requests found</p>
+        </div>
+        } @else {
+        <div class="request-list">
+            @for (r of requests; track r.id) {
+            <div class="request-card">
+                <div class="request-status" [class]="getStatusClass(r.status)">{{ r.status.replace('_', ' ') }}</div>
+                <div class="request-info">
+                    <h3>{{ r.serviceType.replace('_', ' ') }}
+                        @if (r.priority === 'URGENT') {
+                        <span class="urgent-badge">URGENT</span>
+                        }
+                    </h3>
+                    <p>{{ r.description || 'No description' }}</p>
+                    <p class="meta">
+                        <span>Customer #{{ r.customerId }}</span>
+                        <span>Vehicle #{{ r.vehicleId }}</span>
+                        @if (r.technicianId) {
+                        <span class="tech-badge"><i class="bi bi-person-badge"></i> {{ r.technicianName || 'Technician
+                            #' + r.technicianId }}</span>
+                        }
+                    </p>
+                </div>
+                <div class="actions">
+                    @if (r.status === 'PENDING') {
+                    <button class="btn btn-primary" (click)="openAssignModal(r)">Assign</button>
+                    }
+                    @if (r.status === 'COMPLETED' && !r.finalCost) {
+                    <button class="btn btn-invoice" (click)="openInvoiceModal(r)">Generate Invoice</button>
+                    }
+                    @if (r.status === 'COMPLETED' && r.finalCost) {
+                    <span class="invoice-sent">Invoice Sent ₹{{ r.finalCost }}</span>
+                    <button class="btn btn-success" (click)="closeRequest(r.id)">Close (Paid)</button>
+                    }
+                    @if (r.bayNumber) {
+                    <span class="bay-badge">Bay {{ r.bayNumber }}</span>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</div>
+
+<!-- Assign Modal -->
+@if (showAssignModal) {
+<div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Assign Technician</h3>
+            <button class="modal-close" (click)="closeModal()"><i class="bi bi-x"></i></button>
+        </div>
+
+        <form [formGroup]="assignForm" (ngSubmit)="submitAssign()">
+            <div class="form-group">
+                <label>Technician</label>
+                <select formControlName="technicianId">
+                    <option value="">Select technician</option>
+                    @for (tech of availableTechnicians; track tech.id) {
+                    <option [value]="tech.id">{{ tech.firstName }} {{ tech.lastName }} - {{ tech.specialization }} ({{
+                        tech.currentWorkload }}/{{ tech.maxWorkload }} tasks)</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Bay Number</label>
+                <select formControlName="bayNumber">
+                    <option value="">Select bay</option>
+                    @for (bay of availableBays; track bay) {
+                    <option [value]="bay">Bay {{ bay }}</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Priority (from customer)</label>
+                <input type="text" [value]="selectedRequest?.priority || 'NORMAL'" disabled class="disabled-input">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" [disabled]="assignForm.invalid || isSubmitting">
+                    {{ isSubmitting ? 'Assigning...' : 'Assign' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}
+
+<!-- Invoice Modal -->
+@if (showInvoiceModal) {
+<div class="modal-backdrop" (click)="closeInvoiceModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Generate Invoice</h3>
+            <button class="modal-close" (click)="closeInvoiceModal()"><i class="bi bi-x"></i></button>
+        </div>
+
+        <form [formGroup]="invoiceForm" (ngSubmit)="generateInvoice()">
+            <div class="invoice-summary">
+                <div class="cost-row">
+                    <span>Parts Cost (from inventory)</span>
+                    <span class="cost-value">₹{{ partsCost | number:'1.2-2' }}</span>
+                </div>
+                <div class="form-group">
+                    <label>Labor Cost</label>
+                    <input type="number" formControlName="laborCost" min="0" placeholder="Enter labor cost">
+                </div>
+                <div class="cost-row total">
+                    <span>Total Invoice</span>
+                    <span class="cost-value">₹{{ totalInvoice | number:'1.2-2' }}</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Notes (optional)</label>
+                <textarea formControlName="notes" rows="2" placeholder="Any additional notes..."></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeInvoiceModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" [disabled]="invoiceForm.invalid || isGeneratingInvoice">
+                    {{ isGeneratingInvoice ? 'Generating...' : 'Generate Invoice' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}
