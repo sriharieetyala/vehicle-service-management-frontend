@@ -1,16 +1,19 @@
-/* Minimal styles - mostly using Bootstrap defaults */
-h1 {
-    font-weight: 600;
+/* Landing page uses global styles */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -0.5rem;
 }
 
-.card {
-    border: 1px solid #dee2e6;
+.col-md-4 {
+    flex: 0 0 33.333%;
+    max-width: 33.333%;
+    padding: 0 0.5rem;
 }
 
-.card-title {
-    font-size: 1.1rem;
-}
-
-.card-text {
-    font-size: 0.9rem;
+@media (max-width: 768px) {
+    .col-md-4 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
 }

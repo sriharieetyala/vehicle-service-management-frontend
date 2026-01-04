@@ -1,40 +1,138 @@
-<div class="container py-5">
-    <div class="row">
-        <div class="col-lg-8 mx-auto text-center">
-            <h1>Welcome to VSMS</h1>
-            <p class="text-muted mb-4">
-                Your trusted partner for vehicle service and maintenance.
-            </p>
-            <a routerLink="/auth/login" class="btn btn-primary">Get Started</a>
+<!-- Hero Section -->
+<section class="hero">
+    <div class="container">
+        <h1>Professional Vehicle Service <span class="text-accent">Management</span></h1>
+        <p>Book your vehicle service in minutes. Track progress in real-time. Get your vehicle serviced by certified
+            technicians.</p>
+        <div class="hero-buttons">
+            <a routerLink="/auth/login" class="btn btn-accent btn-lg">
+                <i class="bi bi-calendar-check me-2"></i>Book a Service
+            </a>
+            <a routerLink="/auth/register-technician" class="btn btn-outline-light btn-lg">
+                <i class="bi bi-tools me-2"></i>Join as Technician
+            </a>
         </div>
     </div>
-</div>
+</section>
 
-<div class="container py-4">
-    <div class="row">
-        <div class="col-md-4 mb-3">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Expert Service</h5>
-                    <p class="card-text text-muted">Certified technicians for all vehicle types.</p>
-                </div>
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">5,000+</div>
+                <div class="stat-label">Services Completed</div>
             </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Fast Turnaround</h5>
-                    <p class="card-text text-muted">Quick service without compromising quality.</p>
-                </div>
+            <div class="stat-item">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Expert Technicians</div>
             </div>
-        </div>
-        <div class="col-md-4 mb-3">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">Fair Pricing</h5>
-                    <p class="card-text text-muted">Transparent costs with no hidden fees.</p>
-                </div>
+            <div class="stat-item">
+                <div class="stat-number">10,000+</div>
+                <div class="stat-label">Happy Customers</div>
             </div>
         </div>
     </div>
-</div>
+</section>
+
+<!-- Services Section -->
+<section class="services-section" id="services">
+    <div class="container">
+        <div class="section-header">
+            <h2>Our Services</h2>
+            <p>Comprehensive vehicle maintenance and repair services</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card card">
+                <div class="service-icon">
+                    <i class="bi bi-droplet-fill"></i>
+                </div>
+                <h5>Oil Change</h5>
+                <p>Regular oil changes to keep your engine running smoothly</p>
+            </div>
+            <div class="service-card card">
+                <div class="service-icon">
+                    <i class="bi bi-disc-fill"></i>
+                </div>
+                <h5>Brake Service</h5>
+                <p>Complete brake inspection and replacement services</p>
+            </div>
+            <div class="service-card card">
+                <div class="service-icon">
+                    <i class="bi bi-gear-fill"></i>
+                </div>
+                <h5>Engine Tune-up</h5>
+                <p>Comprehensive engine diagnostics and tune-up</p>
+            </div>
+            <div class="service-card card">
+                <div class="service-icon">
+                    <i class="bi bi-snow"></i>
+                </div>
+                <h5>AC Service</h5>
+                <p>AC repair, gas refill and complete servicing</p>
+            </div>
+            <div class="service-card card">
+                <div class="service-icon">
+                    <i class="bi bi-circle"></i>
+                </div>
+                <h5>Wheel Alignment</h5>
+                <p>Precision wheel alignment for better handling</p>
+            </div>
+            <div class="service-card card">
+                <div class="service-icon">
+                    <i class="bi bi-battery-charging"></i>
+                </div>
+                <h5>Battery Service</h5>
+                <p>Battery testing, charging and replacement</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about-section" id="about">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Why Choose VSMS?</h2>
+                <p>We provide transparent, reliable, and professional vehicle servicing with real-time tracking and
+                    certified technicians.</p>
+                <ul class="about-features">
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Certified & Experienced Technicians</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Real-time Service Tracking</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Transparent Pricing</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Quality Genuine Parts</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>Service Warranty</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section">
+    <div class="container">
+        <h2>Ready to Get Started?</h2>
+        <p>Join thousands of vehicle owners who trust VSMS for their service needs.</p>
+        <div class="cta-buttons">
+            <a routerLink="/auth/login" class="btn btn-accent btn-lg">
+                Book a Service <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+    </div>
+</section>
