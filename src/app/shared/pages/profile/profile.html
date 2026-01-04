@@ -1,0 +1,204 @@
+<div class="profile-page">
+    <div class="profile-container">
+        <a [routerLink]="dashboardLink" class="back-link">
+            <i class="bi bi-arrow-left"></i> Back to Dashboard
+        </a>
+
+        @if (isLoading) {
+        <div class="loading">Loading...</div>
+        }
+
+        @if (errorMessage) {
+        <div class="alert alert-danger">{{ errorMessage }}</div>
+        }
+
+        @if (successMessage) {
+        <div class="alert alert-success">{{ successMessage }}</div>
+        }
+
+        <!-- Customer Profile (editable) -->
+        @if (!isLoading && isCustomer && customer) {
+        <div class="profile-card">
+            <div class="profile-top">
+                <div class="avatar"><i class="bi bi-person-fill"></i></div>
+                <div>
+                    <h2>{{ customer.firstName }} {{ customer.lastName }}</h2>
+                    <span>{{ customer.email }}</span>
+                </div>
+            </div>
+
+            <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+                <div class="field-group">
+                    <div class="field">
+                        <label>First Name</label>
+                        @if (isEditing) {
+                        <input type="text" formControlName="firstName">
+                        } @else {
+                        <span>{{ customer.firstName }}</span>
+                        }
+                    </div>
+                    <div class="field">
+                        <label>Last Name</label>
+                        @if (isEditing) {
+                        <input type="text" formControlName="lastName">
+                        } @else {
+                        <span>{{ customer.lastName }}</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Phone</label>
+                    @if (isEditing) {
+                    <input type="tel" formControlName="phone">
+                    } @else {
+                    <span>{{ customer.phone || 'Not set' }}</span>
+                    }
+                </div>
+
+                <div class="field">
+                    <label>Address</label>
+                    @if (isEditing) {
+                    <input type="text" formControlName="address" placeholder="Street address">
+                    } @else {
+                    <span>{{ customer.address || 'Not set' }}</span>
+                    }
+                </div>
+
+                @if (isEditing) {
+                <div class="field-group">
+                    <div class="field">
+                        <label>City</label>
+                        <input type="text" formControlName="city">
+                    </div>
+                    <div class="field">
+                        <label>State</label>
+                        <input type="text" formControlName="state">
+                    </div>
+                    <div class="field">
+                        <label>ZIP</label>
+                        <input type="text" formControlName="zipCode">
+                    </div>
+                </div>
+                } @else {
+                <div class="field">
+                    <label>Location</label>
+                    <span>
+                        @if (customer.city || customer.state || customer.zipCode) {
+                        {{ customer.city }} {{ customer.state }} {{ customer.zipCode }}
+                        } @else {
+                        Not set
+                        }
+                    </span>
+                </div>
+                }
+
+                <div class="actions">
+                    @if (isEditing) {
+                    <button type="button" class="btn-cancel" (click)="cancelEdit()">Cancel</button>
+                    <button type="submit" class="btn-save" [disabled]="isSaving">
+                        {{ isSaving ? 'Saving...' : 'Save' }}
+                    </button>
+                    } @else {
+                    <button type="button" class="btn-edit" (click)="toggleEdit()">
+                        <i class="bi bi-pencil"></i> Edit
+                    </button>
+                    }
+                </div>
+            </form>
+
+            <div class="member-date">Member since {{ customer.createdAt | date:'MMM yyyy' }}</div>
+        </div>
+        }
+
+        <!-- Technician Profile (shows employeeId) -->
+        @if (!isLoading && isTechnician && technician) {
+        <div class="profile-card">
+            <div class="profile-top">
+                <div class="avatar"><i class="bi bi-person-gear"></i></div>
+                <div>
+                    <h2>{{ technician.firstName }} {{ technician.lastName }}</h2>
+                    <span>{{ technician.email }}</span>
+                </div>
+            </div>
+
+            <table border="1" cellpadding="10" style="width:100%;border-collapse:collapse;margin-top:20px">
+                <tr style="background:#f0f9ff">
+                    <td><strong>Employee ID</strong></td>
+                    <td><strong style="color:#1e40af">{{ technician.employeeId }}</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>First Name</strong></td>
+                    <td>{{ technician.firstName }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Last Name</strong></td>
+                    <td>{{ technician.lastName }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Email</strong></td>
+                    <td>{{ technician.email }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Phone</strong></td>
+                    <td>{{ technician.phone || 'Not set' }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Specialization</strong></td>
+                    <td>{{ technician.specialization }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Experience</strong></td>
+                    <td>{{ technician.experience }} years</td>
+                </tr>
+                <tr>
+                    <td><strong>Status</strong></td>
+                    <td>
+                        <span [style.color]="technician.isOnDuty ? '#10b981' : '#ef4444'">
+                            {{ technician.isOnDuty ? 'On Duty' : 'Off Duty' }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Workload</strong></td>
+                    <td>{{ technician.currentWorkload }} / {{ technician.maxWorkload }}</td>
+                </tr>
+            </table>
+
+            <div class="member-date">Joined {{ technician.createdAt | date:'MMM yyyy' }}</div>
+        </div>
+        }
+
+        <!-- Other Users Profile (Manager, Admin - read-only) -->
+        @if (!isLoading && !isCustomer && !isTechnician && userInfo) {
+        <div class="profile-card">
+            <div class="profile-top">
+                <div class="avatar"><i class="bi bi-person-fill"></i></div>
+                <div>
+                    <h2>{{ userInfo.firstName }} {{ userInfo.lastName }}</h2>
+                    <span>{{ userInfo.email }}</span>
+                </div>
+            </div>
+
+            <table border="1" cellpadding="10" style="width:100%;border-collapse:collapse;margin-top:20px">
+                <tr>
+                    <td><strong>First Name</strong></td>
+                    <td>{{ userInfo.firstName }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Last Name</strong></td>
+                    <td>{{ userInfo.lastName }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Email</strong></td>
+                    <td>{{ userInfo.email }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Role</strong></td>
+                    <td>{{ userInfo.role }}</td>
+                </tr>
+            </table>
+        </div>
+        }
+    </div>
+</div>
