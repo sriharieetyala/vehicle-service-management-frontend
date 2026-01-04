@@ -1,6 +1,22 @@
-<div class="container py-5">
-    <h1>Customer Dashboard</h1>
-    <p class="text-muted">Welcome to your dashboard.</p>
-    <hr>
-    <p>Dashboard features coming soon...</p>
+<div class="dashboard-container">
+    <div class="container">
+        <div class="dashboard-header">
+            <div>
+                <h1>Welcome back, <span class="text-accent">Customer</span>!</h1>
+                <p style="margin: 0; opacity: 0.8;">Manage your vehicles and services from your dashboard</p>
+            </div>
+        </div>
+
+        <h3 class="section-title">Quick Actions</h3>
+        <div class="action-cards">
+            @for (card of dashboardCards; track card.title) {
+            <div class="action-card">
+                <i class="bi {{ card.icon }}"></i>
+                <h5>{{ card.title }}</h5>
+                <p>{{ card.description }}</p>
+                <a [routerLink]="card.route" class="btn btn-go">GO</a>
+            </div>
+            }
+        </div>
+    </div>
 </div>
