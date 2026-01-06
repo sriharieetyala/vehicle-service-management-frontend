@@ -1,8 +1,8 @@
 <nav class="navbar navbar-expand-lg">
     <div class="container">
-        <a class="navbar-brand" routerLink="/">
+        <a class="navbar-brand" [routerLink]="isLoggedIn ? dashboardLink : '/'">
             <i class="bi bi-car-front-fill me-2"></i>
-            <span class="brand-text">VSMS</span>
+            <span class="brand-text">GearUp</span>
         </a>
 
         <!-- Mobile Hamburger Toggle -->

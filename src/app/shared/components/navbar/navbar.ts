@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../../../auth/services/auth';
+import { AuthService } from '../../../core/auth/services/auth';
 
 @Component({
   selector: 'app-navbar',

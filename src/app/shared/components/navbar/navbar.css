@@ -27,6 +27,9 @@
 
 .brand-text {
     color: var(--color-primary);
+    font-weight: 700;
+    font-size: 1.4rem;
+    letter-spacing: -0.5px;
 }
 
 /* Hamburger Toggle */

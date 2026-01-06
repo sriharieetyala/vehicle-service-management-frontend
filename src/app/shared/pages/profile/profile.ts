@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { AuthService, CustomerResponse } from '../../../auth/services/auth';
+import { AuthService, CustomerResponse } from '../../../core/auth/services/auth';
 import { TechnicianService, TechnicianResponse } from '../../../services/technician';
 
 @Component({
