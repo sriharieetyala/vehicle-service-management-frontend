@@ -1,0 +1,102 @@
+<div class="auth-page">
+    <!-- Left Panel - Branding -->
+    <div class="auth-branding">
+        <div class="branding-content">
+            <div class="brand-logo">
+                <i class="bi bi-car-front-fill"></i>
+                <span>GearUp</span>
+            </div>
+            <h1>Welcome Back!</h1>
+            <p>Sign in to manage your vehicles, book services, and track your service history.</p>
+
+            <div class="brand-features">
+                <div class="feature">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Real-time service tracking</span>
+                </div>
+                <div class="feature">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Certified technicians</span>
+                </div>
+                <div class="feature">
+                    <i class="bi bi-check-circle-fill"></i>
+                    <span>Transparent pricing</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel - Form -->
+    <div class="auth-form-panel">
+        <div class="auth-card">
+            <h2>Sign In</h2>
+            <p>Enter your credentials to continue</p>
+
+            @if (errorMessage) {
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-circle me-2"></i>{{ errorMessage }}
+            </div>
+            }
+
+            @if (successMessage) {
+            <div class="alert alert-success">
+                <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
+            </div>
+            }
+
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <div class="input-group">
+                        <span class="input-icon"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" formControlName="email"
+                            placeholder="Enter email" [class.is-invalid]="f['email'].invalid && submitted">
+                    </div>
+                    @if (f['email'].invalid && submitted) {
+                    <div class="invalid-feedback">
+                        @if (f['email'].errors?.['required']) { Email is required }
+                        @if (f['email'].errors?.['email']) { Please enter a valid email }
+                    </div>
+                    }
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-icon"><i class="bi bi-lock"></i></span>
+                        <input [type]="showPassword ? 'text' : 'password'" class="form-control" id="password"
+                            formControlName="password" placeholder="Password"
+                            [class.is-invalid]="f['password'].invalid && submitted">
+                        <button type="button" class="password-toggle" (click)="togglePassword()">
+                            <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+                        </button>
+                    </div>
+                    @if (f['password'].invalid && submitted) {
+                    <div class="invalid-feedback">
+                        @if (f['password'].errors?.['required']) { Password is required }
+                        @if (f['password'].errors?.['minlength']) { Minimum 6 characters }
+                    </div>
+                    }
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-lg" [disabled]="loginForm.invalid || isLoading">
+                    @if (isLoading) {
+                    <span>Signing in...</span>
+                    } @else {
+                    <span>Sign In</span>
+                    }
+                </button>
+            </form>
+
+            <div class="auth-divider"><span>or</span></div>
+
+            <p class="text-center mb-0 register-link">
+                New customer? <a routerLink="/auth/register">Create Account</a>
+            </p>
+
+            <a routerLink="/" class="back-link">
+                <i class="bi bi-arrow-left me-1"></i> Back to Home
+            </a>
+        </div>
+    </div>
+</div>
