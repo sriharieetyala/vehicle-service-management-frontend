@@ -51,6 +51,7 @@
                     <th>Stock</th>
                     <th>Min Stock</th>
                     <th>Status</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -69,6 +70,12 @@
                         <span class="status-badge ok">OK</span>
                         }
                     </td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" (click)="openEditModal(part)"
+                            style="padding:4px 8px;font-size:12px">
+                            <i class="bi bi-pencil"></i> Edit
+                        </button>
+                    </td>
                 </tr>
                 }
             </tbody>
@@ -85,16 +92,18 @@
         <form [formGroup]="addPartForm" (ngSubmit)="submitAddPart()">
             <div style="margin-bottom:12px">
                 <label>Part Name *</label><br>
-                <input type="text" formControlName="name" style="width:100%;padding:8px;border:1px solid #ccc">
+                <input type="text" formControlName="name" style="width:100%;padding:8px;border:1px solid #ccc"
+                    placeholder="e.g., Brake Pad">
                 @if (addPartForm.get('name')?.touched && addPartForm.get('name')?.invalid) {
-                <small style="color:red">Part name is required</small>
+                <small style="color:red">Part name is required (min 2 characters)</small>
                 }
             </div>
             <div style="margin-bottom:12px">
                 <label>Part Number *</label><br>
-                <input type="text" formControlName="partNumber" style="width:100%;padding:8px;border:1px solid #ccc">
+                <input type="text" formControlName="partNumber" style="width:100%;padding:8px;border:1px solid #ccc"
+                    placeholder="e.g., BP-001">
                 @if (addPartForm.get('partNumber')?.touched && addPartForm.get('partNumber')?.invalid) {
-                <small style="color:red">Part number is required</small>
+                <small style="color:red">Part number must be alphanumeric (letters, numbers, dashes only)</small>
                 }
             </div>
             <div style="margin-bottom:12px">
@@ -111,34 +120,93 @@
             </div>
             <div style="margin-bottom:12px">
                 <label>Price (₹) *</label><br>
-                <input type="number" formControlName="price" min="0.01" step="0.01"
-                    style="width:100%;padding:8px;border:1px solid #ccc">
+                <input type="text" formControlName="price" style="width:100%;padding:8px;border:1px solid #ccc"
+                    placeholder="e.g., 99.99">
                 @if (addPartForm.get('price')?.touched && addPartForm.get('price')?.invalid) {
-                <small style="color:red">Price must be at least ₹0.01</small>
+                <small style="color:red">Enter a valid price (e.g., 99.99, max 2 decimal places)</small>
                 }
             </div>
             <div style="margin-bottom:12px">
                 <label>Stock Quantity *</label><br>
-                <input type="number" formControlName="stockQuantity" min="0"
-                    style="width:100%;padding:8px;border:1px solid #ccc">
+                <input type="text" formControlName="stockQuantity" style="width:100%;padding:8px;border:1px solid #ccc"
+                    placeholder="e.g., 100">
                 @if (addPartForm.get('stockQuantity')?.touched && addPartForm.get('stockQuantity')?.invalid) {
-                <small style="color:red">Quantity cannot be negative</small>
+                <small style="color:red">Enter a valid quantity (whole numbers only)</small>
                 }
             </div>
             <div style="margin-bottom:12px">
                 <label>Minimum Stock *</label><br>
-                <input type="number" formControlName="minimumStock" min="1"
-                    style="width:100%;padding:8px;border:1px solid #ccc">
+                <input type="text" formControlName="minimumStock" style="width:100%;padding:8px;border:1px solid #ccc"
+                    placeholder="e.g., 5">
                 @if (addPartForm.get('minimumStock')?.touched && addPartForm.get('minimumStock')?.invalid) {
-                <small style="color:red">Minimum stock must be at least 1</small>
+                <small style="color:red">Minimum stock must be at least 1 (whole numbers only)</small>
                 }
             </div>
             <div style="margin-top:15px">
                 <button type="button" (click)="closeAddModal()"
-                    style="padding:8px 16px;margin-right:10px;background:#eee;border:1px solid #ccc">Cancel</button>
+                    style="padding:8px 16px;margin-right:10px;background:#eee;border:1px solid #ccc;cursor:pointer">Cancel</button>
                 <button type="submit" [disabled]="addPartForm.invalid || isSubmitting"
+                    [style.opacity]="addPartForm.invalid ? '0.5' : '1'"
+                    [style.cursor]="addPartForm.invalid ? 'not-allowed' : 'pointer'"
                     style="padding:8px 16px;background:#f59e0b;color:white;border:none">
                     {{ isSubmitting ? 'Adding...' : 'Add Part' }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+}
+
+<!-- Edit Part Modal -->
+@if (showEditModal) {
+<div class="modal-backdrop" (click)="closeEditModal()">
+    <div class="modal-box" (click)="$event.stopPropagation()">
+        <h3>Edit Part (Refill Stock)</h3>
+        <form [formGroup]="editPartForm" (ngSubmit)="submitEditPart()">
+            <div style="margin-bottom:12px">
+                <label>Part Name *</label><br>
+                <input type="text" formControlName="name" style="width:100%;padding:8px;border:1px solid #ccc">
+            </div>
+            <div style="margin-bottom:12px">
+                <label>Category *</label><br>
+                <select formControlName="category" style="width:100%;padding:8px;border:1px solid #ccc">
+                    @for (cat of categories; track cat) {
+                    <option [value]="cat">{{ cat }}</option>
+                    }
+                </select>
+            </div>
+            <div style="margin-bottom:12px">
+                <label>Price (₹) *</label><br>
+                <input type="text" formControlName="unitPrice" style="width:100%;padding:8px;border:1px solid #ccc"
+                    placeholder="e.g., 99.99">
+                @if (editPartForm.get('unitPrice')?.touched && editPartForm.get('unitPrice')?.invalid) {
+                <small style="color:red">Enter a valid price (max 2 decimal places)</small>
+                }
+            </div>
+            <div style="margin-bottom:12px">
+                <label>Stock Quantity * (Refill here!)</label><br>
+                <input type="text" formControlName="quantity" style="width:100%;padding:8px;border:1px solid #ccc"
+                    placeholder="e.g., 100">
+                @if (editPartForm.get('quantity')?.touched && editPartForm.get('quantity')?.invalid) {
+                <small style="color:red">Enter a valid quantity (whole numbers ≥1)</small>
+                }
+            </div>
+            <div style="margin-bottom:12px">
+                <label>Minimum Stock *</label><br>
+                <input type="text" formControlName="reorderLevel" style="width:100%;padding:8px;border:1px solid #ccc"
+                    placeholder="e.g., 5">
+                @if (editPartForm.get('reorderLevel')?.touched && editPartForm.get('reorderLevel')?.invalid) {
+                <small style="color:red">Minimum stock must be at least 1</small>
+                }
+            </div>
+            <div style="margin-top:15px">
+                <button type="button" (click)="closeEditModal()"
+                    style="padding:8px 16px;margin-right:10px;background:#eee;border:1px solid #ccc;cursor:pointer">Cancel</button>
+                <button type="submit" [disabled]="editPartForm.invalid || isUpdating"
+                    [style.opacity]="editPartForm.invalid ? '0.5' : '1'"
+                    [style.cursor]="editPartForm.invalid ? 'not-allowed' : 'pointer'"
+                    style="padding:8px 16px;background:#22c55e;color:white;border:none">
+                    {{ isUpdating ? 'Saving...' : 'Save Changes' }}
                 </button>
             </div>
         </form>

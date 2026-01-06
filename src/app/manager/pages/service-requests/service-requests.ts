@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ServiceRequestService, ServiceRequestResponse, RequestStatus, AssignTechnicianDTO, CompleteWorkDTO } from '../../../services/service-request';
 import { TechnicianService, TechnicianResponse } from '../../../services/technician';
 
 @Component({
     selector: 'app-service-requests',
     standalone: true,
-    imports: [RouterLink, ReactiveFormsModule, DatePipe, DecimalPipe],
+    imports: [RouterLink, ReactiveFormsModule, DecimalPipe],
     templateUrl: './service-requests.html',
     styleUrl: './service-requests.css'
 })

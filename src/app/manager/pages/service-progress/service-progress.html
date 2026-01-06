@@ -34,7 +34,7 @@
                     <td>{{ req.issueDescription }}</td>
                     <td><span class="badge" [class.urgent]="req.priority === 'URGENT'">{{ req.priority }}</span></td>
                     <td>Bay {{ req.bayNumber || '-' }}</td>
-                    <td>{{ req.technicianName || 'Unassigned' }}</td>
+                    <td>{{ req.technicianId ? 'Tech #' + req.technicianId : 'Unassigned' }}</td>
                     <td>
                         <button class="btn btn-sm btn-success" (click)="markCompleted(req.id)">
                             <i class="bi bi-check"></i> Mark Complete
