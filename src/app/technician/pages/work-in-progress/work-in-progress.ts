@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../../../auth/services/auth';
+import { AuthService } from '../../../core/auth/services/auth';
 import { ServiceRequestService, ServiceRequestResponse } from '../../../services/service-request';
 
 @Component({

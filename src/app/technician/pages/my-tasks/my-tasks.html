@@ -7,6 +7,17 @@
             </div>
         </div>
 
+        <!-- Filter -->
+        <div style="margin-bottom:15px;padding:10px 15px;background:white;border-radius:6px;border:1px solid #e2e8f0">
+            <select [(ngModel)]="selectedStatus" (change)="applyFilter()"
+                style="padding:6px 10px;border:1px solid #ccc;border-radius:4px">
+                @for (s of filterStatuses; track s) {
+                <option [value]="s">{{ s.replace('_', ' ') }}</option>
+                }
+            </select>
+            <span style="margin-left:12px;color:#64748b">{{ tasks.length }} results</span>
+        </div>
+
         @if (isLoading) {
         <div class="loading">Loading...</div>
         } @else if (tasks.length === 0) {

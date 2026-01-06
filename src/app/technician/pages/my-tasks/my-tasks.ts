@@ -2,19 +2,25 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { AuthService } from '../../../auth/services/auth';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../core/auth/services/auth';
 import { ServiceRequestService, ServiceRequestResponse, StatusUpdateDTO, RequestStatus } from '../../../services/service-request';
 
 @Component({
     selector: 'app-my-tasks',
     standalone: true,
-    imports: [RouterLink, ReactiveFormsModule, DatePipe],
+    imports: [RouterLink, ReactiveFormsModule, DatePipe, FormsModule],
     templateUrl: './my-tasks.html',
     styleUrl: './my-tasks.css'
 })
 export class MyTasksPage implements OnInit {
+    allTasks: ServiceRequestResponse[] = [];
     tasks: ServiceRequestResponse[] = [];
     isLoading = true;
+
+    // Filter
+    selectedStatus = 'ALL';
+    filterStatuses = ['ALL', 'ASSIGNED', 'IN_PROGRESS', 'COMPLETED', 'CLOSED'];
 
     // Update Status Modal
     showStatusModal = false;
@@ -50,17 +56,25 @@ export class MyTasksPage implements OnInit {
         this.isLoading = true;
         this.serviceRequestService.getByTechnicianId(techId).subscribe({
             next: (res: { data?: ServiceRequestResponse[] }) => {
-                this.tasks = res.data || [];
+                this.allTasks = res.data || [];
+                this.applyFilter();
                 this.isLoading = false;
             },
             error: () => this.isLoading = false
         });
     }
 
+    applyFilter(): void {
+        if (this.selectedStatus === 'ALL') {
+            this.tasks = [...this.allTasks];
+        } else {
+            this.tasks = this.allTasks.filter(t => t.status === this.selectedStatus);
+        }
+    }
+
     openStatusModal(task: ServiceRequestResponse): void {
         this.selectedTask = task;
         this.statusForm.reset();
-        // Set available statuses based on current status
         if (task.status === 'ASSIGNED') {
             this.statuses = ['IN_PROGRESS'];
         } else if (task.status === 'IN_PROGRESS') {

@@ -10,17 +10,32 @@
             </button>
         </div>
 
+        <!-- Status Filter -->
+        <div class="filter-bar" style="margin-bottom: 1rem; display: flex; gap: 0.5rem;">
+            <button class="btn btn-sm" [class.btn-primary]="statusFilter === 'ALL'"
+                [class.btn-outline-secondary]="statusFilter !== 'ALL'" (click)="setStatusFilter('ALL')">All</button>
+            <button class="btn btn-sm" [class.btn-warning]="statusFilter === 'PENDING'"
+                [class.btn-outline-secondary]="statusFilter !== 'PENDING'"
+                (click)="setStatusFilter('PENDING')">Pending</button>
+            <button class="btn btn-sm" [class.btn-success]="statusFilter === 'APPROVED'"
+                [class.btn-outline-secondary]="statusFilter !== 'APPROVED'"
+                (click)="setStatusFilter('APPROVED')">Approved</button>
+            <button class="btn btn-sm" [class.btn-danger]="statusFilter === 'REJECTED'"
+                [class.btn-outline-secondary]="statusFilter !== 'REJECTED'"
+                (click)="setStatusFilter('REJECTED')">Rejected</button>
+        </div>
+
         @if (isLoading) {
         <div class="loading">Loading...</div>
-        } @else if (requests.length === 0) {
+        } @else if (filteredRequests.length === 0) {
         <div class="empty-state">
             <i class="bi bi-box-seam"></i>
-            <p>No part requests yet</p>
+            <p>No part requests found</p>
             <button class="btn btn-primary" (click)="openRequestModal()">Request a Part</button>
         </div>
         } @else {
         <div class="request-list">
-            @for (r of requests; track r.id) {
+            @for (r of filteredRequests; track r.id) {
             <div class="request-card">
                 <div class="request-info">
                     <h3>{{ r.partName }}</h3>

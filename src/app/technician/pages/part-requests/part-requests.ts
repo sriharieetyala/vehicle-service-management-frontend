@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { AuthService } from '../../../auth/services/auth';
+import { AuthService } from '../../../core/auth/services/auth';
 import { InventoryService, PartRequestResponse, PartRequestCreateDTO, PartResponse } from '../../../services/inventory';
 import { ServiceRequestService, ServiceRequestResponse } from '../../../services/service-request';
 
@@ -16,6 +16,18 @@ import { ServiceRequestService, ServiceRequestResponse } from '../../../services
 export class PartRequestsPage implements OnInit {
     requests: PartRequestResponse[] = [];
     isLoading = true;
+
+    // Status filter
+    statusFilter: 'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED' = 'ALL';
+
+    get filteredRequests(): PartRequestResponse[] {
+        if (this.statusFilter === 'ALL') return this.requests;
+        return this.requests.filter(r => r.status === this.statusFilter);
+    }
+
+    setStatusFilter(status: 'ALL' | 'PENDING' | 'APPROVED' | 'REJECTED'): void {
+        this.statusFilter = status;
+    }
 
     // Dropdown options
     availableParts: PartResponse[] = [];
