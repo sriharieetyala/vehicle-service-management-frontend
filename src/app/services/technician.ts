@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// Enums
-export type Specialization = 'GENERAL' | 'ENGINE' | 'ELECTRICAL' | 'AC' | 'BRAKES' | 'TRANSMISSION';
+// Technician specializations
+export type Specialization = 'GENERAL' | 'ENGINE' | 'ELECTRICAL' | 'AC' | 'BODY';
 export type UserStatus = 'ACTIVE' | 'PENDING' | 'REJECTED' | 'INACTIVE';
 
-// Request DTOs
+// Request DTO for technician registration
 export interface TechnicianCreateRequest {
     email: string;
     password: string;
@@ -17,7 +17,7 @@ export interface TechnicianCreateRequest {
     experience: number;
 }
 
-// Response DTOs
+// Response DTO from technician API
 export interface TechnicianResponse {
     id: number;
     userId: number;
@@ -29,7 +29,7 @@ export interface TechnicianResponse {
     specialization: Specialization;
     experience: number;
     status: UserStatus;
-    isOnDuty: boolean;
+    onDuty: boolean;
     currentWorkload: number;
     maxWorkload: number;
     createdAt: string;
@@ -45,6 +45,8 @@ export interface CreatedResponse {
     id: number;
 }
 
+// TechnicianService handles technician registration and management
+// Includes the approval workflow and duty status toggling
 @Injectable({
     providedIn: 'root'
 })
@@ -53,57 +55,58 @@ export class TechnicianService {
 
     constructor(private http: HttpClient) { }
 
+    // Get auth headers with JWT token
     private getHeaders(): HttpHeaders {
         const token = localStorage.getItem('accessToken');
         return new HttpHeaders().set('Authorization', `Bearer ${token}`);
     }
 
-    // Register (public)
+    // Register new technician (public, no auth required)
     register(data: TechnicianCreateRequest): Observable<CreatedResponse> {
         return this.http.post<CreatedResponse>(this.apiUrl, data);
     }
 
-    // Get all technicians
+    // Get all approved technicians
     getAll(): Observable<ApiResponse<TechnicianResponse[]>> {
         return this.http.get<ApiResponse<TechnicianResponse[]>>(this.apiUrl, { headers: this.getHeaders() });
     }
 
-    // Get by ID
+    // Get single technician by ID
     getById(id: number): Observable<ApiResponse<TechnicianResponse>> {
         return this.http.get<ApiResponse<TechnicianResponse>>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
     }
 
-    // Get available technicians
+    // Get technicians who are on duty and have capacity
     getAvailable(): Observable<ApiResponse<TechnicianResponse[]>> {
         return this.http.get<ApiResponse<TechnicianResponse[]>>(`${this.apiUrl}/available`, { headers: this.getHeaders() });
     }
 
-    // Get by specialization
+    // Filter by specialization for better task assignment
     getBySpecialization(spec: Specialization): Observable<ApiResponse<TechnicianResponse[]>> {
         return this.http.get<ApiResponse<TechnicianResponse[]>>(`${this.apiUrl}/by-specialization?spec=${spec}`, { headers: this.getHeaders() });
     }
 
-    // Get pending technicians
+    // Get technicians waiting for admin approval
     getPending(): Observable<ApiResponse<TechnicianResponse[]>> {
         return this.http.get<ApiResponse<TechnicianResponse[]>>(`${this.apiUrl}/pending`, { headers: this.getHeaders() });
     }
 
-    // Approve technician
+    // Admin approves a technician application
     approve(id: number): Observable<ApiResponse<TechnicianResponse>> {
         return this.http.put<ApiResponse<TechnicianResponse>>(`${this.apiUrl}/${id}/review?action=APPROVE`, {}, { headers: this.getHeaders() });
     }
 
-    // Reject technician
+    // Admin rejects a technician application
     reject(id: number): Observable<ApiResponse<TechnicianResponse>> {
         return this.http.put<ApiResponse<TechnicianResponse>>(`${this.apiUrl}/${id}/review?action=REJECT`, {}, { headers: this.getHeaders() });
     }
 
-    // Toggle duty status
+    // Technician toggles their on duty status
     toggleDuty(id: number): Observable<ApiResponse<TechnicianResponse>> {
         return this.http.put<ApiResponse<TechnicianResponse>>(`${this.apiUrl}/${id}/duty`, {}, { headers: this.getHeaders() });
     }
 
-    // Delete
+    // Delete technician account
     delete(id: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
     }

@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// Enums
+// Manager departments
 export type Department = 'SERVICE' | 'INVENTORY';
 
-// Request DTOs
+// Request DTOs for manager operations
 export interface ManagerCreateRequest {
     email: string;
     password: string;
@@ -22,7 +22,7 @@ export interface ManagerUpdateRequest {
     department?: Department;
 }
 
-// Response DTOs
+// Response DTO from manager API
 export interface ManagerResponse {
     id: number;
     userId: number;
@@ -44,6 +44,8 @@ export interface CreatedResponse {
     id: number;
 }
 
+// ManagerService handles manager creation and management
+// Only admins can create managers, credentials are sent via email
 @Injectable({
     providedIn: 'root'
 })
@@ -52,28 +54,29 @@ export class ManagerService {
 
     constructor(private http: HttpClient) { }
 
+    // Get auth headers with JWT token
     private getHeaders(): HttpHeaders {
         const token = localStorage.getItem('accessToken');
         return new HttpHeaders().set('Authorization', `Bearer ${token}`);
     }
 
-    // Create manager (admin only)
+    // Admin creates a new manager
     create(data: ManagerCreateRequest): Observable<CreatedResponse> {
         return this.http.post<CreatedResponse>(this.apiUrl, data, { headers: this.getHeaders() });
     }
 
-    // Get all managers (with optional department filter)
+    // Get all managers with optional department filter
     getAll(department?: Department): Observable<ApiResponse<ManagerResponse[]>> {
         const url = department ? `${this.apiUrl}?department=${department}` : this.apiUrl;
         return this.http.get<ApiResponse<ManagerResponse[]>>(url, { headers: this.getHeaders() });
     }
 
-    // Update manager
+    // Update manager profile
     update(id: number, data: ManagerUpdateRequest): Observable<ApiResponse<ManagerResponse>> {
         return this.http.put<ApiResponse<ManagerResponse>>(`${this.apiUrl}/${id}`, data, { headers: this.getHeaders() });
     }
 
-    // Delete manager
+    // Delete manager account
     delete(id: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
     }

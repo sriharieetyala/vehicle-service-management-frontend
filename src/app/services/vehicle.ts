@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// Enums matching backend
+// Fuel types supported by the system
 export type FuelType = 'PETROL' | 'DIESEL' | 'ELECTRIC' | 'HYBRID' | 'CNG';
 export type VehicleType = 'TWO_WHEELER' | 'THREE_WHEELER' | 'FOUR_WHEELER' | 'HEAVY_VEHICLE';
 
-// Request DTOs
+// Request DTOs for vehicle operations
 export interface VehicleCreateRequest {
     customerId: number;
     brand: string;
@@ -25,7 +25,7 @@ export interface VehicleUpdateRequest {
     vehicleType?: VehicleType;
 }
 
-// Response DTOs
+// Response DTOs from vehicle API
 export interface VehicleResponse {
     id: number;
     customerId: number;
@@ -48,6 +48,8 @@ export interface CreatedResponse {
     id: number;
 }
 
+// VehicleService handles all vehicle related API calls
+// Customers use this to register and manage their vehicles
 @Injectable({
     providedIn: 'root'
 })
@@ -56,37 +58,38 @@ export class VehicleService {
 
     constructor(private http: HttpClient) { }
 
+    // Get auth headers with JWT token
     private getHeaders(): HttpHeaders {
         const token = localStorage.getItem('accessToken');
         return new HttpHeaders().set('Authorization', `Bearer ${token}`);
     }
 
-    // Create vehicle
+    // Register a new vehicle
     create(data: VehicleCreateRequest): Observable<CreatedResponse> {
         return this.http.post<CreatedResponse>(this.apiUrl, data, { headers: this.getHeaders() });
     }
 
-    // Get vehicle by ID
+    // Get single vehicle by ID
     getById(id: number): Observable<ApiResponse<VehicleResponse>> {
         return this.http.get<ApiResponse<VehicleResponse>>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
     }
 
-    // Get all vehicles (admin)
+    // Get all vehicles for admin
     getAll(): Observable<ApiResponse<VehicleResponse[]>> {
         return this.http.get<ApiResponse<VehicleResponse[]>>(this.apiUrl, { headers: this.getHeaders() });
     }
 
-    // Get vehicles by customer ID
+    // Get all vehicles for a specific customer
     getByCustomerId(customerId: number): Observable<ApiResponse<VehicleResponse[]>> {
         return this.http.get<ApiResponse<VehicleResponse[]>>(`${this.apiUrl}/customer/${customerId}`, { headers: this.getHeaders() });
     }
 
-    // Update vehicle
+    // Update vehicle details
     update(id: number, data: VehicleUpdateRequest): Observable<ApiResponse<VehicleResponse>> {
         return this.http.put<ApiResponse<VehicleResponse>>(`${this.apiUrl}/${id}`, data, { headers: this.getHeaders() });
     }
 
-    // Delete vehicle
+    // Delete a vehicle
     delete(id: number): Observable<void> {
         return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
     }

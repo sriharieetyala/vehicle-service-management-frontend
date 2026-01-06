@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// Enums
+// Service request status flow
 export type RequestStatus = 'PENDING' | 'ASSIGNED' | 'IN_PROGRESS' | 'COMPLETED' | 'CLOSED' | 'CANCELLED';
 export type ServiceType = 'REGULAR_SERVICE' | 'REPAIR' | 'ACCIDENT' | 'OTHER';
 
-// Request DTOs
+// Request DTOs for service operations
 export interface ServiceRequestCreate {
     customerId: number;
     vehicleId: number;
@@ -35,7 +35,7 @@ export interface CompleteWorkDTO {
     notes?: string;
 }
 
-// Response DTOs
+// Response DTOs from service request API
 export interface ServiceRequestResponse {
     id: number;
     customerId: number;
@@ -83,6 +83,8 @@ export interface CreatedResponse {
     id: number;
 }
 
+// ServiceRequestService handles the entire service request lifecycle
+// From booking by customer to assignment, work completion and closing
 @Injectable({
     providedIn: 'root'
 })
@@ -91,84 +93,85 @@ export class ServiceRequestService {
 
     constructor(private http: HttpClient) { }
 
+    // Get auth headers with JWT token
     private getHeaders(): HttpHeaders {
         const token = localStorage.getItem('accessToken');
         return new HttpHeaders().set('Authorization', `Bearer ${token}`);
     }
 
-    // Create service request
+    // Customer books a new service request
     create(data: ServiceRequestCreate): Observable<CreatedResponse> {
         return this.http.post<CreatedResponse>(this.apiUrl, data, { headers: this.getHeaders() });
     }
 
-    // Get by ID
+    // Get single service request by ID
     getById(id: number): Observable<ApiResponse<ServiceRequestResponse>> {
         return this.http.get<ApiResponse<ServiceRequestResponse>>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
     }
 
-    // Get by customer
+    // Get all service requests for a customer
     getByCustomerId(customerId: number): Observable<ApiResponse<ServiceRequestResponse[]>> {
         return this.http.get<ApiResponse<ServiceRequestResponse[]>>(`${this.apiUrl}/customer/${customerId}`, { headers: this.getHeaders() });
     }
 
-    // Get by vehicle
+    // Get service history for a vehicle
     getByVehicleId(vehicleId: number): Observable<ApiResponse<ServiceRequestResponse[]>> {
         return this.http.get<ApiResponse<ServiceRequestResponse[]>>(`${this.apiUrl}/vehicle/${vehicleId}`, { headers: this.getHeaders() });
     }
 
-    // Get all (with optional status filter)
+    // Get all requests with optional status filter
     getAll(status?: RequestStatus): Observable<ApiResponse<ServiceRequestResponse[]>> {
         const url = status ? `${this.apiUrl}?status=${status}` : this.apiUrl;
         return this.http.get<ApiResponse<ServiceRequestResponse[]>>(url, { headers: this.getHeaders() });
     }
 
-    // Get by technician
+    // Get all tasks assigned to a technician
     getByTechnicianId(technicianId: number, status?: RequestStatus): Observable<ApiResponse<ServiceRequestResponse[]>> {
         const url = status ? `${this.apiUrl}/technician/${technicianId}?status=${status}` : `${this.apiUrl}/technician/${technicianId}`;
         return this.http.get<ApiResponse<ServiceRequestResponse[]>>(url, { headers: this.getHeaders() });
     }
 
-    // Assign technician + bay
+    // Manager assigns technician and service bay
     assign(id: number, data: AssignTechnicianDTO): Observable<ApiResponse<ServiceRequestResponse>> {
         return this.http.put<ApiResponse<ServiceRequestResponse>>(`${this.apiUrl}/${id}/assign`, data, { headers: this.getHeaders() });
     }
 
-    // Update status
+    // Update request status through the workflow
     updateStatus(id: number, data: StatusUpdateDTO): Observable<ApiResponse<ServiceRequestResponse>> {
         return this.http.put<ApiResponse<ServiceRequestResponse>>(`${this.apiUrl}/${id}/status`, data, { headers: this.getHeaders() });
     }
 
-    // Set pricing
+    // Manager sets labor cost after work is done
     setPricing(id: number, data: CompleteWorkDTO): Observable<ApiResponse<ServiceRequestResponse>> {
         return this.http.put<ApiResponse<ServiceRequestResponse>>(`${this.apiUrl}/${id}/set-pricing`, data, { headers: this.getHeaders() });
     }
 
-    // Cancel
+    // Customer cancels their request
     cancel(id: number): Observable<ApiResponse<ServiceRequestResponse>> {
         return this.http.put<ApiResponse<ServiceRequestResponse>>(`${this.apiUrl}/${id}/cancel`, {}, { headers: this.getHeaders() });
     }
 
-    // Reschedule (new date)
+    // Customer reschedules to a new date
     reschedule(id: number, newDate: string): Observable<ApiResponse<ServiceRequestResponse>> {
         return this.http.put<ApiResponse<ServiceRequestResponse>>(`${this.apiUrl}/${id}/reschedule?date=${newDate}`, {}, { headers: this.getHeaders() });
     }
 
-    // Get stats
+    // Get dashboard statistics
     getStats(): Observable<ApiResponse<DashboardStats>> {
         return this.http.get<ApiResponse<DashboardStats>>(`${this.apiUrl}/stats`, { headers: this.getHeaders() });
     }
 
-    // Get all bays
+    // Get status of all service bays
     getAllBays(): Observable<ApiResponse<BayStatus[]>> {
         return this.http.get<ApiResponse<BayStatus[]>>(`${this.apiUrl}/bays`, { headers: this.getHeaders() });
     }
 
-    // Get available bays
+    // Get list of available bays for assignment
     getAvailableBays(): Observable<ApiResponse<number[]>> {
         return this.http.get<ApiResponse<number[]>>(`${this.apiUrl}/bays/available`, { headers: this.getHeaders() });
     }
 
-    // Get parts cost
+    // Get parts cost from inventory for a request
     getPartsCost(id: number): Observable<ApiResponse<number>> {
         return this.http.get<ApiResponse<number>>(`${this.apiUrl}/${id}/parts-cost`, { headers: this.getHeaders() });
     }

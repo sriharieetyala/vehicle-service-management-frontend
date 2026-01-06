@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-// Enums
-export type PartCategory = 'ENGINE' | 'ELECTRICAL' | 'BRAKES' | 'TRANSMISSION' | 'AC' | 'BODY' | 'GENERAL';
+// Part categories in inventory
+export type PartCategory = 'ENGINE' | 'BRAKES' | 'ELECTRICAL' | 'SUSPENSION' | 'BODY' | 'TRANSMISSION' | 'FLUIDS' | 'FILTERS' | 'TIRES' | 'OTHER';
 export type PartRequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
 
-// Request DTOs
+// Request DTOs for parts operations
 export interface PartCreateDTO {
     name: string;
     partNumber: string;
@@ -14,6 +14,15 @@ export interface PartCreateDTO {
     unitPrice: number;
     quantity: number;
     reorderLevel: number;
+}
+
+export interface PartUpdateDTO {
+    name?: string;
+    description?: string;
+    category?: PartCategory;
+    unitPrice?: number;
+    quantity?: number;
+    reorderLevel?: number;
 }
 
 export interface PartRequestCreateDTO {
@@ -24,7 +33,7 @@ export interface PartRequestCreateDTO {
     notes?: string;
 }
 
-// Response DTOs
+// Response DTOs from inventory API
 export interface PartResponse {
     id: number;
     name: string;
@@ -62,6 +71,8 @@ export interface CreatedResponse {
     id: number;
 }
 
+// InventoryService handles parts catalog and part requests
+// Inventory managers use this to manage stock and approve requests
 @Injectable({
     providedIn: 'root'
 })
@@ -71,48 +82,54 @@ export class InventoryService {
 
     constructor(private http: HttpClient) { }
 
+    // Get auth headers with JWT token
     private getHeaders(): HttpHeaders {
         const token = localStorage.getItem('accessToken');
         return new HttpHeaders().set('Authorization', `Bearer ${token}`);
     }
 
-    // ===== PARTS =====
+    // Parts Management
 
-    // Create part
+    // Add new part to inventory catalog
     createPart(data: PartCreateDTO): Observable<CreatedResponse> {
         return this.http.post<CreatedResponse>(this.partsUrl, data, { headers: this.getHeaders() });
     }
 
-    // Get all parts (with optional category filter)
+    // Get all parts with optional category filter
     getAllParts(category?: PartCategory): Observable<ApiResponse<PartResponse[]>> {
         const url = category ? `${this.partsUrl}?category=${category}` : this.partsUrl;
         return this.http.get<ApiResponse<PartResponse[]>>(url, { headers: this.getHeaders() });
     }
 
-    // Get low stock parts
+    // Get parts that need restocking
     getLowStockParts(): Observable<ApiResponse<PartResponse[]>> {
         return this.http.get<ApiResponse<PartResponse[]>>(`${this.partsUrl}/low-stock`, { headers: this.getHeaders() });
     }
 
-    // ===== PART REQUESTS =====
+    // Update part details or restock quantity
+    updatePart(id: number, data: PartUpdateDTO): Observable<ApiResponse<PartResponse>> {
+        return this.http.put<ApiResponse<PartResponse>>(`${this.partsUrl}/${id}`, data, { headers: this.getHeaders() });
+    }
 
-    // Create part request
+    // Part Requests Management
+
+    // Technician submits a part request
     createRequest(data: PartRequestCreateDTO): Observable<CreatedResponse> {
         return this.http.post<CreatedResponse>(this.requestsUrl, data, { headers: this.getHeaders() });
     }
 
-    // Get pending requests
+    // Get pending requests for inventory manager
     getPendingRequests(): Observable<ApiResponse<PartRequestResponse[]>> {
         return this.http.get<ApiResponse<PartRequestResponse[]>>(`${this.requestsUrl}/pending`, { headers: this.getHeaders() });
     }
 
-    // Approve request
+    // Approve part request and deduct from stock
     approveRequest(id: number, approvedBy?: number): Observable<ApiResponse<PartRequestResponse>> {
         const url = approvedBy ? `${this.requestsUrl}/${id}/approve?approvedBy=${approvedBy}` : `${this.requestsUrl}/${id}/approve`;
         return this.http.put<ApiResponse<PartRequestResponse>>(url, {}, { headers: this.getHeaders() });
     }
 
-    // Reject request
+    // Reject part request with optional reason
     rejectRequest(id: number, rejectedBy?: number, reason?: string): Observable<ApiResponse<PartRequestResponse>> {
         let url = `${this.requestsUrl}/${id}/reject`;
         const params: string[] = [];
@@ -122,12 +139,12 @@ export class InventoryService {
         return this.http.put<ApiResponse<PartRequestResponse>>(url, {}, { headers: this.getHeaders() });
     }
 
-    // Get total cost for service
+    // Get total parts cost for a service request
     getTotalCostForService(serviceRequestId: number): Observable<ApiResponse<number>> {
         return this.http.get<ApiResponse<number>>(`${this.requestsUrl}/service/${serviceRequestId}/total-cost`, { headers: this.getHeaders() });
     }
 
-    // Get requests by technician
+    // Get all requests made by a technician
     getRequestsByTechnician(technicianId: number): Observable<ApiResponse<PartRequestResponse[]>> {
         return this.http.get<ApiResponse<PartRequestResponse[]>>(`${this.requestsUrl}/technician/${technicianId}`, { headers: this.getHeaders() });
     }
