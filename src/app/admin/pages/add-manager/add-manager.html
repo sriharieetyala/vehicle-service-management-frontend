@@ -1,0 +1,102 @@
+<div class="page-container">
+    <div class="form-wrapper">
+        <div class="page-header">
+            <a routerLink="/admin" class="back-link"><i class="bi bi-arrow-left"></i> Back to Dashboard</a>
+            <h1>Create Manager</h1>
+            <p class="subtitle">Add a new service bay or inventory manager</p>
+        </div>
+
+        <div class="form-card">
+            @if (errorMessage) {
+            <div class="alert alert-danger"><i class="bi bi-exclamation-circle"></i> {{ errorMessage }}</div>
+            }
+            @if (successMessage) {
+            <div class="alert alert-success"><i class="bi bi-check-circle"></i> {{ successMessage }}</div>
+            }
+
+            <form [formGroup]="managerForm" (ngSubmit)="onSubmit()">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>First Name *</label>
+                        <input type="text" formControlName="firstName" placeholder="John">
+                        @if (f['firstName'].touched && f['firstName'].invalid) {
+                        <span class="field-error">
+                            @if (f['firstName'].errors?.['required']) { First name required }
+                            @if (f['firstName'].errors?.['invalidName']) { Only letters allowed }
+                        </span>
+                        }
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name *</label>
+                        <input type="text" formControlName="lastName" placeholder="Doe">
+                        @if (f['lastName'].touched && f['lastName'].invalid) {
+                        <span class="field-error">
+                            @if (f['lastName'].errors?.['required']) { Last name required }
+                            @if (f['lastName'].errors?.['invalidName']) { Only letters allowed }
+                        </span>
+                        }
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Email *</label>
+                    <input type="email" formControlName="email" placeholder="manager@vsms.com">
+                    @if (f['email'].touched && f['email'].invalid) {
+                    <span class="field-error">Valid email required</span>
+                    }
+                </div>
+
+                <div class="form-group">
+                    <label>Phone *</label>
+                    <input type="tel" formControlName="phone" placeholder="9876543210" maxlength="10">
+                    @if (f['phone'].touched && f['phone'].invalid) {
+                    <span class="field-error">Valid 10-digit phone required</span>
+                    }
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Employee ID *</label>
+                        <input type="text" formControlName="employeeId" placeholder="MGR001"
+                            style="text-transform:uppercase">
+                        @if (f['employeeId'].touched && f['employeeId'].invalid) {
+                        <span class="field-error">4-10 alphanumeric chars (e.g. MGR001)</span>
+                        }
+                    </div>
+                    <div class="form-group">
+                        <label>Department *</label>
+                        <select formControlName="department">
+                            @for (dept of departments; track dept.value) {
+                            <option [value]="dept.value">{{ dept.label }}</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password *</label>
+                    <div class="password-input">
+                        <input [type]="showPassword ? 'text' : 'password'" formControlName="password"
+                            placeholder="••••••••">
+                        <button type="button" class="toggle-btn" (click)="togglePassword()">
+                            <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+                        </button>
+                    </div>
+                    <div class="password-requirements">
+                        <small [class.valid]="passwordErrors.hasMinLength">✓ 8+ characters</small>
+                        <small [class.valid]="passwordErrors.hasUpperCase">✓ Uppercase</small>
+                        <small [class.valid]="passwordErrors.hasLowerCase">✓ Lowercase</small>
+                        <small [class.valid]="passwordErrors.hasSpecialChar">✓ Special char</small>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a routerLink="/admin" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-primary" [disabled]="managerForm.invalid || isSubmitting">
+                        {{ isSubmitting ? 'Creating...' : 'Create Manager' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

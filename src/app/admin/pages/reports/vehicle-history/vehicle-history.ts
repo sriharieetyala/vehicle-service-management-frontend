@@ -1,12 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { DatePipe } from '@angular/common';
 import { VehicleService, VehicleResponse, ApiResponse } from '../../../../services/vehicle';
 
 @Component({
     selector: 'app-vehicle-history',
     standalone: true,
-    imports: [RouterLink, DatePipe],
+    imports: [RouterLink],
     templateUrl: './vehicle-history.html',
     styleUrl: './vehicle-history.css'
 })

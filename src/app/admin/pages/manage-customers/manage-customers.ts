@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { AuthService, CustomerResponse } from '../../../auth/services/auth';
+import { AuthService, CustomerResponse } from '../../../core/auth/services/auth';
 
 interface User {
     id: number;

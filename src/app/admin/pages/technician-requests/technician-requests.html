@@ -1,0 +1,61 @@
+<div class="page-container">
+    <div class="container">
+        <div class="page-header">
+            <div>
+                <a routerLink="/admin" class="back-link"><i class="bi bi-arrow-left"></i> Back</a>
+                <h1>Pending Technician Requests</h1>
+            </div>
+        </div>
+
+        @if (isLoading) {
+        <div class="loading">Loading...</div>
+        } @else if (pendingTechnicians.length === 0) {
+        <div class="empty-state">
+            <i class="bi bi-check-circle"></i>
+            <p>No pending requests</p>
+        </div>
+        } @else {
+        <div class="request-list">
+            @for (tech of pendingTechnicians; track tech.id) {
+            <div class="request-card">
+                <div class="tech-info">
+                    <div class="avatar">{{ tech.firstName[0] }}{{ tech.lastName[0] }}</div>
+                    <div class="details">
+                        <h3>{{ tech.firstName }} {{ tech.lastName }}</h3>
+                        <p>{{ tech.specialization }} · {{ tech.experience }} years</p>
+                        <p class="email">{{ tech.email }}</p>
+                    </div>
+                </div>
+                <div class="actions">
+                    <button class="btn btn-approve" (click)="approve(tech.id)">
+                        <i class="bi bi-check"></i> Approve
+                    </button>
+                    <button class="btn btn-reject" (click)="openRejectModal(tech.id)">
+                        <i class="bi bi-x"></i> Reject
+                    </button>
+                </div>
+            </div>
+            }
+        </div>
+        }
+    </div>
+</div>
+
+<!-- Reject Modal -->
+@if (showRejectModal) {
+<div class="modal-backdrop" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>Reject Technician</h3>
+            <button class="modal-close" (click)="closeModal()"><i class="bi bi-x"></i></button>
+        </div>
+        <div class="modal-body">
+            <p>Are you sure you want to reject this technician?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+            <button class="btn btn-reject" (click)="confirmReject()">Reject</button>
+        </div>
+    </div>
+</div>
+}
