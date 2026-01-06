@@ -10,10 +10,21 @@
             <span>Total Spent: <strong>₹{{ totalSpent | number:'1.2-2' }}</strong></span>
         </div>
 
+        <!-- Filter Buttons -->
+        <div class="filter-bar" style="margin-bottom: 1rem;">
+            <button class="btn btn-sm" [class.btn-primary]="filterStatus === 'all'"
+                [class.btn-outline-secondary]="filterStatus !== 'all'" (click)="setFilter('all')">All</button>
+            <button class="btn btn-sm" [class.btn-warning]="filterStatus === 'pending'"
+                [class.btn-outline-secondary]="filterStatus !== 'pending'"
+                (click)="setFilter('pending')">Pending</button>
+            <button class="btn btn-sm" [class.btn-success]="filterStatus === 'paid'"
+                [class.btn-outline-secondary]="filterStatus !== 'paid'" (click)="setFilter('paid')">Paid</button>
+        </div>
+
         @if (isLoading) {
         <p>Loading...</p>
-        } @else if (invoices.length === 0) {
-        <p>No invoices yet.</p>
+        } @else if (filteredInvoices.length === 0) {
+        <p>No invoices found.</p>
         } @else {
         <table class="simple-table">
             <thead>
@@ -29,7 +40,7 @@
                 </tr>
             </thead>
             <tbody>
-                @for (inv of invoices; track inv.id) {
+                @for (inv of filteredInvoices; track inv.id) {
                 <tr>
                     <td>#{{ inv.id }}</td>
                     <td>{{ inv.serviceType.replace('_', ' ') }}</td>

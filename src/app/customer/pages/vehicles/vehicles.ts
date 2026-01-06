@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../../../auth/services/auth';
+import { AuthService } from '../../../core/auth/services/auth';
 import { VehicleService, VehicleResponse, VehicleCreateRequest, FuelType, VehicleType } from '../../../services/vehicle';
 
 @Component({
@@ -14,6 +14,7 @@ import { VehicleService, VehicleResponse, VehicleCreateRequest, FuelType, Vehicl
 export class VehiclesPage implements OnInit {
     vehicles: VehicleResponse[] = [];
     isLoading = true;
+    serviceError = '';
 
     // Add Modal
     showAddModal = false;
@@ -60,12 +61,20 @@ export class VehiclesPage implements OnInit {
         if (!customerId) return;
 
         this.isLoading = true;
+        this.serviceError = '';
         this.vehicleService.getByCustomerId(customerId).subscribe({
             next: (res: { data?: VehicleResponse[] }) => {
                 this.vehicles = res.data || [];
                 this.isLoading = false;
             },
-            error: () => this.isLoading = false
+            error: (err: { status?: number }) => {
+                this.isLoading = false;
+                if (err.status === 503 || err.status === 0) {
+                    this.serviceError = 'Vehicle service is temporarily unavailable. Please try again later.';
+                } else {
+                    this.serviceError = 'Failed to load vehicles. Please try again.';
+                }
+            }
         });
     }
 
@@ -109,8 +118,12 @@ export class VehiclesPage implements OnInit {
                 this.showAddModal = false;
                 this.isSubmitting = false;
             },
-            error: (err: { error?: { message?: string } }) => {
-                this.errorMessage = err.error?.message || 'Failed to add vehicle';
+            error: (err: { status?: number; error?: { message?: string } }) => {
+                if (err.status === 503 || err.status === 0 || err.error?.message?.includes('Connection refused')) {
+                    this.errorMessage = 'Vehicle service is temporarily unavailable. Please try again later.';
+                } else {
+                    this.errorMessage = err.error?.message || 'Failed to add vehicle. Please try again.';
+                }
                 this.isSubmitting = false;
             }
         });

@@ -12,6 +12,15 @@
 
         @if (isLoading) {
         <div class="loading">Loading...</div>
+        } @else if (serviceError) {
+        <div class="error-state"
+            style="text-align:center; padding:40px; background:#fef2f2; border-radius:12px; margin-top:20px">
+            <i class="bi bi-exclamation-triangle" style="font-size:48px; color:#dc2626"></i>
+            <p style="color:#dc2626; font-weight:500; margin:15px 0">{{ serviceError }}</p>
+            <button class="btn btn-primary" (click)="loadVehicles()">
+                <i class="bi bi-arrow-clockwise"></i> Retry
+            </button>
+        </div>
         } @else if (vehicles.length === 0) {
         <div class="empty-state">
             <i class="bi bi-car-front"></i>

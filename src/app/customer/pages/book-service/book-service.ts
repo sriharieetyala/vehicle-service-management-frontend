@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from '../../../auth/services/auth';
+import { AuthService } from '../../../core/auth/services/auth';
 import { VehicleService, VehicleResponse } from '../../../services/vehicle';
 import { ServiceRequestService, ServiceRequestCreate, ServiceType } from '../../../services/service-request';
 
@@ -97,8 +97,14 @@ export class BookServicePage implements OnInit {
             next: () => {
                 this.router.navigate(['/customer/services']);
             },
-            error: (err: { error?: { message?: string } }) => {
-                this.errorMessage = err.error?.message || 'Failed to book service';
+            error: (err: { status?: number; error?: { message?: string } }) => {
+                if (err.status === 503) {
+                    this.errorMessage = 'Service temporarily unavailable. Please try again later.';
+                } else if (err.status === 0) {
+                    this.errorMessage = 'Unable to connect to server. Please check your connection.';
+                } else {
+                    this.errorMessage = err.error?.message || 'Failed to book service. Please try again.';
+                }
                 this.isSubmitting = false;
             }
         });

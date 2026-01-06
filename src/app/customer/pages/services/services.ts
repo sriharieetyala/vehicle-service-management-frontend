@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../../auth/services/auth';
+import { AuthService } from '../../../core/auth/services/auth';
 import { ServiceRequestService, ServiceRequestResponse, RequestStatus } from '../../../services/service-request';
+import { VehicleService, VehicleResponse } from '../../../services/vehicle';
 
 @Component({
     selector: 'app-services',
@@ -15,10 +16,12 @@ import { ServiceRequestService, ServiceRequestResponse, RequestStatus } from '..
 export class ServicesPage implements OnInit {
     allServices: ServiceRequestResponse[] = [];
     services: ServiceRequestResponse[] = [];
+    vehicles: VehicleResponse[] = [];
     isLoading = true;
 
-    // Filter
+    // Filters
     selectedStatus = 'ALL';
+    selectedVehicleId: number | null = null;
     statuses: string[] = ['ALL', 'PENDING', 'ASSIGNED', 'IN_PROGRESS', 'COMPLETED', 'CLOSED', 'CANCELLED'];
 
     // Cancel Modal
@@ -33,7 +36,8 @@ export class ServicesPage implements OnInit {
 
     constructor(
         private authService: AuthService,
-        private serviceRequestService: ServiceRequestService
+        private serviceRequestService: ServiceRequestService,
+        private vehicleService: VehicleService
     ) { }
 
     get currentUser() {
@@ -41,7 +45,19 @@ export class ServicesPage implements OnInit {
     }
 
     ngOnInit(): void {
+        this.loadVehicles();
         this.loadServices();
+    }
+
+    loadVehicles(): void {
+        const customerId = this.currentUser?.userId;
+        if (!customerId) return;
+
+        this.vehicleService.getByCustomerId(customerId).subscribe({
+            next: (res) => {
+                this.vehicles = res.data || [];
+            }
+        });
     }
 
     loadServices(): void {
@@ -49,17 +65,35 @@ export class ServicesPage implements OnInit {
         if (!customerId) return;
 
         this.isLoading = true;
-        this.serviceRequestService.getByCustomerId(customerId).subscribe({
-            next: (res: { data?: ServiceRequestResponse[] }) => {
-                this.allServices = res.data || [];
-                this.applyFilter();
-                this.isLoading = false;
-            },
-            error: () => this.isLoading = false
-        });
+
+        // If a vehicle is selected, filter by vehicle
+        if (this.selectedVehicleId) {
+            this.serviceRequestService.getByVehicleId(this.selectedVehicleId).subscribe({
+                next: (res: { data?: ServiceRequestResponse[] }) => {
+                    this.allServices = res.data || [];
+                    this.applyStatusFilter();
+                    this.isLoading = false;
+                },
+                error: () => this.isLoading = false
+            });
+        } else {
+            // Load all services for customer
+            this.serviceRequestService.getByCustomerId(customerId).subscribe({
+                next: (res: { data?: ServiceRequestResponse[] }) => {
+                    this.allServices = res.data || [];
+                    this.applyStatusFilter();
+                    this.isLoading = false;
+                },
+                error: () => this.isLoading = false
+            });
+        }
     }
 
-    applyFilter(): void {
+    onVehicleChange(): void {
+        this.loadServices();
+    }
+
+    applyStatusFilter(): void {
         if (this.selectedStatus === 'ALL') {
             this.services = this.allServices;
         } else {
