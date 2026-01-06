@@ -1,14 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../../auth/services/auth';
+import { AuthService } from '../../../core/auth/services/auth';
 import { ServiceRequestService } from '../../../services/service-request';
 import { InventoryService, PartRequestResponse, ApiResponse } from '../../../services/inventory';
 import { TechnicianService, TechnicianResponse, ApiResponse as TechApiResponse } from '../../../services/technician';
+import { CountUpComponent } from '../../../shared/components/count-up/count-up';
 
 @Component({
   selector: 'app-technician-dashboard',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CountUpComponent],
   templateUrl: './technician-dashboard.html',
   styleUrl: './technician-dashboard.css'
 })
@@ -17,6 +18,7 @@ export class TechnicianDashboard implements OnInit {
   assignedCount = 0;
   inProgressCount = 0;
   completedCount = 0;
+  closedCount = 0;
   approvedParts = 0;
   rejectedParts = 0;
   isLoading = true;
@@ -69,6 +71,7 @@ export class TechnicianDashboard implements OnInit {
         this.assignedCount = tasks.filter((t: { status: string }) => t.status === 'ASSIGNED').length;
         this.inProgressCount = tasks.filter((t: { status: string }) => t.status === 'IN_PROGRESS').length;
         this.completedCount = tasks.filter((t: { status: string }) => t.status === 'COMPLETED').length;
+        this.closedCount = tasks.filter((t: { status: string }) => t.status === 'CLOSED').length;
         this.isLoading = false;
       }
     });
@@ -93,7 +96,7 @@ export class TechnicianDashboard implements OnInit {
 
     this.technicianService.getById(techId).subscribe({
       next: (res) => {
-        this.isOnDuty = res.data?.isOnDuty || false;
+        this.isOnDuty = res.data?.onDuty || false;
       }
     });
   }
@@ -105,10 +108,17 @@ export class TechnicianDashboard implements OnInit {
     this.isTogglingDuty = true;
     this.technicianService.toggleDuty(techId).subscribe({
       next: (res) => {
-        this.isOnDuty = res.data?.isOnDuty || false;
+        console.log('Toggle response:', res);
+        // Use response if available, otherwise just flip
+        if (res.data && typeof res.data.onDuty === 'boolean') {
+          this.isOnDuty = res.data.onDuty;
+        } else {
+          this.isOnDuty = !this.isOnDuty;
+        }
         this.isTogglingDuty = false;
       },
-      error: () => {
+      error: (err) => {
+        console.error('Toggle error:', err);
         this.isTogglingDuty = false;
       }
     });

@@ -9,35 +9,35 @@
             <div class="stat-box pending">
                 <div class="stat-icon"><i class="bi bi-clock"></i></div>
                 <div class="stat-info">
-                    <span class="stat-value">{{ pendingCount }}</span>
+                    <span class="stat-value"><app-count-up [endValue]="pendingCount"></app-count-up></span>
                     <span class="stat-label">Pending</span>
                 </div>
             </div>
             <div class="stat-box">
                 <div class="stat-icon"><i class="bi bi-person-check"></i></div>
                 <div class="stat-info">
-                    <span class="stat-value">{{ assignedCount }}</span>
+                    <span class="stat-value"><app-count-up [endValue]="assignedCount"></app-count-up></span>
                     <span class="stat-label">Assigned</span>
                 </div>
             </div>
             <div class="stat-box inprogress">
                 <div class="stat-icon"><i class="bi bi-gear"></i></div>
                 <div class="stat-info">
-                    <span class="stat-value">{{ inProgressCount }}</span>
+                    <span class="stat-value"><app-count-up [endValue]="inProgressCount"></app-count-up></span>
                     <span class="stat-label">In Progress</span>
                 </div>
             </div>
             <div class="stat-box complete">
                 <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
                 <div class="stat-info">
-                    <span class="stat-value">{{ completedCount }}</span>
+                    <span class="stat-value"><app-count-up [endValue]="completedCount"></app-count-up></span>
                     <span class="stat-label">Completed</span>
                 </div>
             </div>
             <div class="stat-box closed">
                 <div class="stat-icon"><i class="bi bi-check2-all"></i></div>
                 <div class="stat-info">
-                    <span class="stat-value">{{ closedCount }}</span>
+                    <span class="stat-value"><app-count-up [endValue]="closedCount"></app-count-up></span>
                     <span class="stat-label">Closed</span>
                 </div>
             </div>

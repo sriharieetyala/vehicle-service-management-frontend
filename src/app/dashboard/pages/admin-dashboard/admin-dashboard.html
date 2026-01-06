@@ -9,21 +9,21 @@
             <div class="stat-box">
                 <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
                 <div class="stat-info">
-                    <span class="stat-value">{{ activeCustomers }}</span>
+                    <span class="stat-value"><app-count-up [endValue]="activeCustomers"></app-count-up></span>
                     <span class="stat-label">Active Customers</span>
                 </div>
             </div>
             <div class="stat-box">
                 <div class="stat-icon"><i class="bi bi-wrench"></i></div>
                 <div class="stat-info">
-                    <span class="stat-value">{{ activeTechnicians }}</span>
+                    <span class="stat-value"><app-count-up [endValue]="activeTechnicians"></app-count-up></span>
                     <span class="stat-label">Active Technicians</span>
                 </div>
             </div>
             <div class="stat-box pending">
                 <div class="stat-icon"><i class="bi bi-hourglass-split"></i></div>
                 <div class="stat-info">
-                    <span class="stat-value">{{ pendingTechnicians }}</span>
+                    <span class="stat-value"><app-count-up [endValue]="pendingTechnicians"></app-count-up></span>
                     <span class="stat-label">Pending Approvals</span>
                 </div>
             </div>

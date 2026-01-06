@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ServiceRequestService, ServiceRequestResponse, ApiResponse } from '../../../services/service-request';
+import { CountUpComponent } from '../../../shared/components/count-up/count-up';
 
 @Component({
   selector: 'app-manager-dashboard',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CountUpComponent],
   templateUrl: './manager-dashboard.html',
   styleUrl: './manager-dashboard.css'
 })

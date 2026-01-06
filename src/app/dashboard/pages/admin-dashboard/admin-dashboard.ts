@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../../../auth/services/auth';
+import { AuthService } from '../../../core/auth/services/auth';
 import { TechnicianService } from '../../../services/technician';
+import { CountUpComponent } from '../../../shared/components/count-up/count-up';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, CountUpComponent],
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css'
 })

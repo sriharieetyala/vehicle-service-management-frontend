@@ -2,11 +2,12 @@
     <div class="container">
         <div class="dashboard-header">
             <h1>Technician Dashboard</h1>
-            <div class="duty-toggle">
-                <span style="margin-right:10px">Duty Status:</span>
-                <button class="duty-btn" [class.on-duty]="isOnDuty" [class.off-duty]="!isOnDuty" (click)="toggleDuty()"
-                    [disabled]="isTogglingDuty">
-                    {{ isTogglingDuty ? 'Updating...' : (isOnDuty ? 'ON DUTY' : 'OFF DUTY') }}
+            <div style="display:flex;align-items:center;gap:10px">
+                <span>Duty:</span>
+                <button (click)="toggleDuty()" [disabled]="isTogglingDuty"
+                    [style.background]="isOnDuty ? '#10b981' : '#ef4444'"
+                    style="color:white;border:none;padding:8px 16px;font-weight:600;cursor:pointer">
+                    {{ isTogglingDuty ? '...' : (isOnDuty ? 'ON' : 'OFF') }}
                 </button>
             </div>
         </div>
@@ -16,22 +17,29 @@
             <div class="stat-box">
                 <div class="stat-icon"><i class="bi bi-list-task"></i></div>
                 <div class="stat-info">
-                    <span class="stat-value">{{ assignedCount }}</span>
+                    <span class="stat-value"><app-count-up [endValue]="assignedCount"></app-count-up></span>
                     <span class="stat-label">Assigned</span>
                 </div>
             </div>
             <div class="stat-box inprogress">
                 <div class="stat-icon"><i class="bi bi-gear"></i></div>
                 <div class="stat-info">
-                    <span class="stat-value">{{ inProgressCount }}</span>
+                    <span class="stat-value"><app-count-up [endValue]="inProgressCount"></app-count-up></span>
                     <span class="stat-label">In Progress</span>
                 </div>
             </div>
             <div class="stat-box complete">
                 <div class="stat-icon"><i class="bi bi-check-circle"></i></div>
                 <div class="stat-info">
-                    <span class="stat-value">{{ completedCount }}</span>
+                    <span class="stat-value"><app-count-up [endValue]="completedCount"></app-count-up></span>
                     <span class="stat-label">Completed</span>
+                </div>
+            </div>
+            <div class="stat-box closed">
+                <div class="stat-icon"><i class="bi bi-check-all"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value"><app-count-up [endValue]="closedCount"></app-count-up></span>
+                    <span class="stat-label">Closed</span>
                 </div>
             </div>
         </div>
