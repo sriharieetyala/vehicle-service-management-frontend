@@ -59,7 +59,23 @@
     color: #94a3b8;
     font-size: 0.95rem;
     line-height: 1.7;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Branding image styling */
+.branding-image {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.branding-image img {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    object-fit: cover;
 }
 
 .brand-stats {

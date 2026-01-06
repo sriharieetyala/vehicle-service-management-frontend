@@ -17,3 +17,46 @@
         max-width: 100%;
     }
 }
+
+/* Hero Image */
+.hero-image {
+    max-height: 400px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.hero-image:hover {
+    transform: scale(1.02);
+}
+
+/* About Section Image */
+.about-section img {
+    max-height: 350px;
+    object-fit: cover;
+    width: 100%;
+}
+
+/* Make hero section responsive */
+.hero .row {
+    align-items: center;
+}
+
+.hero h1 {
+    text-align: left;
+}
+
+.hero p {
+    text-align: left;
+}
+
+@media (max-width: 991px) {
+
+    .hero h1,
+    .hero p {
+        text-align: center;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+}

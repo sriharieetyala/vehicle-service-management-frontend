@@ -45,8 +45,8 @@
                     <td>#{{ inv.id }}</td>
                     <td>{{ inv.serviceType.replace('_', ' ') }}</td>
                     <td>{{ inv.completedAt | date:'shortDate' }}</td>
-                    <td>₹{{ inv.laborCost || 0 | number:'1.0-0' }}</td>
-                    <td>₹{{ inv.partsCost || 0 | number:'1.0-0' }}</td>
+                    <td>{{ (inv.laborCost || 0) > 0 ? '₹' + (inv.laborCost | number:'1.0-0') : '-' }}</td>
+                    <td>{{ (inv.partsCost || 0) > 0 ? '₹' + (inv.partsCost | number:'1.0-0') : '-' }}</td>
                     <td><strong>₹{{ inv.finalCost || inv.totalCost || 0 | number:'1.0-0' }}</strong></td>
                     <td>
                         @if (isPaid(inv.status)) {

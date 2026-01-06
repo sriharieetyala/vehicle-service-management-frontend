@@ -1,16 +1,25 @@
 <!-- Hero Section -->
 <section class="hero">
     <div class="container">
-        <h1>Professional Vehicle Service <span class="text-accent">Management</span></h1>
-        <p>Book your vehicle service in minutes. Track progress in real-time. Get your vehicle serviced by certified
-            technicians.</p>
-        <div class="hero-buttons">
-            <a routerLink="/auth/login" class="btn btn-accent btn-lg">
-                <i class="bi bi-calendar-check me-2"></i>Book a Service
-            </a>
-            <a routerLink="/auth/register-technician" class="btn btn-outline-light btn-lg">
-                <i class="bi bi-tools me-2"></i>Join as Technician
-            </a>
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1>Professional Vehicle Service <span class="text-accent">Management</span></h1>
+                <p>Book your vehicle service in minutes. Track progress in real-time. Get your vehicle serviced by
+                    certified
+                    technicians.</p>
+                <div class="hero-buttons">
+                    <a routerLink="/auth/login" class="btn btn-accent btn-lg">
+                        <i class="bi bi-calendar-check me-2"></i>Book a Service
+                    </a>
+                    <a routerLink="/auth/register-technician" class="btn btn-outline-light btn-lg">
+                        <i class="bi bi-tools me-2"></i>Join as Technician
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <img src="assets/images/hero-mechanic.png" alt="Professional Mechanic"
+                    class="hero-image img-fluid rounded-4 shadow-lg">
+            </div>
         </div>
     </div>
 </section>
@@ -92,8 +101,11 @@
 <!-- About Section -->
 <section class="about-section" id="about">
     <div class="container">
-        <div class="row">
-            <div class="col-md-6">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="assets/images/about-team.png" alt="Our Expert Team" class="img-fluid rounded-4 shadow">
+            </div>
+            <div class="col-lg-6">
                 <h2>Why Choose GearUp?</h2>
                 <p>We provide transparent, reliable, and professional vehicle servicing with real-time tracking and
                     certified technicians.</p>

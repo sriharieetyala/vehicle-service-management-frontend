@@ -160,6 +160,26 @@ export class ServiceRequestsPage implements OnInit {
         this.invoiceForm.reset();
     }
 
+    // Flag for decimal validation error
+    decimalError = false;
+
+    // Validate and show error for more than 2 decimal places
+    validateDecimalInput(event: Event): void {
+        const input = event.target as HTMLInputElement;
+        const value = input.value;
+
+        // Check if value has more than 2 decimal places
+        const parts = value.split('.');
+        if (parts.length === 2 && parts[1].length > 2) {
+            this.decimalError = true;
+            // Truncate to 2 decimal places
+            input.value = parts[0] + '.' + parts[1].substring(0, 2);
+            this.invoiceForm.patchValue({ laborCost: parseFloat(input.value) });
+        } else {
+            this.decimalError = false;
+        }
+    }
+
     get totalInvoice(): number {
         return this.partsCost + (this.invoiceForm.value.laborCost || 0);
     }
@@ -168,8 +188,8 @@ export class ServiceRequestsPage implements OnInit {
         if (!this.invoiceRequest || this.invoiceForm.invalid) return;
 
         const data: CompleteWorkDTO = {
-            laborCost: +this.invoiceForm.value.laborCost,
-            partsCost: this.partsCost,
+            laborCost: Math.round((+this.invoiceForm.value.laborCost) * 100) / 100,
+            partsCost: Math.round(this.partsCost * 100) / 100,
             notes: this.invoiceForm.value.notes
         };
 

@@ -137,8 +137,15 @@
                     <span class="cost-value">₹{{ partsCost | number:'1.2-2' }}</span>
                 </div>
                 <div class="form-group">
-                    <label>Labor Cost</label>
-                    <input type="number" formControlName="laborCost" min="0" placeholder="Enter labor cost">
+                    <label>Labor Cost (max 2 decimals)</label>
+                    <input type="number" formControlName="laborCost" min="0" step="0.01" placeholder="e.g. 199.99"
+                        (input)="validateDecimalInput($event)" [class.is-invalid]="decimalError">
+                    @if (decimalError) {
+                    <div class="invalid-feedback"
+                        style="display: block; color: #dc2626; font-size: 0.8rem; margin-top: 0.25rem;">
+                        Maximum 2 decimal places allowed
+                    </div>
+                    }
                 </div>
                 <div class="cost-row total">
                     <span>Total Invoice</span>
